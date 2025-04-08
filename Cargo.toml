@@ -1,0 +1,11 @@
+[package]
+name = "aoc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+md5 = "0.7.0"
+regex = "1"
+thousands = "0.2.0"
+lazy_static = "1.4.0"
+itertools = "0.12.0"
