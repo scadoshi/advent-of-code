@@ -2,21 +2,21 @@ use std::collections::HashMap;
 
 /// Represents a validated position on the grid
 #[derive(Debug, Clone, Eq, Hash, PartialEq)]
-pub struct Coordinate {
+struct Coordinate {
     row: usize,
     col: usize,
 }
 
 /// Represents a position that hasn't been bounds-checked yet
 #[allow(dead_code)]
-pub struct UncheckedCoordinate {
+struct UncheckedCoordinate {
     row: i32,
     col: i32,
 }
 
 /// Represents the four possible directions the guard can face/move
 #[derive(Debug, Clone, PartialEq)]
-pub enum Direction {
+enum Direction {
     Left,
     Right,
     Up,
@@ -26,7 +26,7 @@ pub enum Direction {
 impl Direction {
     /// Returns the new direction after turning 90 degrees right
     #[allow(dead_code)]
-    pub fn turn_right(current_dir: &Direction) -> Direction {
+    fn turn_right(current_dir: &Direction) -> Direction {
         match current_dir {
             Direction::Left => Direction::Up,
             Direction::Right => Direction::Down,
@@ -38,14 +38,14 @@ impl Direction {
 
 #[derive(Clone)]
 #[allow(dead_code)]
-pub struct Guard {
+struct Guard {
     pos: Coordinate,
     dir: Direction,
 }
 
 /// Represents a grid where a guard patrols and tracks their movement
 #[allow(dead_code)]
-pub struct Grid {
+struct Grid {
     tiles: Vec<Vec<char>>,
     rows: usize,
     cols: usize,
@@ -54,7 +54,7 @@ pub struct Grid {
 
 impl Grid {
     #[allow(dead_code)]
-    pub fn new() -> Self {
+    fn new() -> Self {
         // Read the input file and convert each line into a vector of characters
         // Each line becomes a row, and each character becomes a column element
         let tiles: Vec<Vec<char>> = include_str!("..\\inputs\\day06.txt")
@@ -99,7 +99,7 @@ impl Grid {
 
     /// Calculates the guard's next position and direction based on current state
     #[allow(dead_code)]
-    pub fn next_guard(&self) -> Option<Guard> {
+    fn next_guard(&self) -> Option<Guard> {
         let current_guard = self.guard.as_ref()?; // Early return if guard is None
 
         // Calculate potential next position based on current direction
@@ -164,7 +164,7 @@ impl Grid {
     /// - The guard moves off the grid
     /// - An infinite loop is detected (guard visits same position facing same direction)
     #[allow(dead_code)]
-    pub fn simulate_guard(mut grid: Grid) -> (HashMap<Coordinate, Vec<Direction>>, bool) {
+    fn simulate_guard(mut grid: Grid) -> (HashMap<Coordinate, Vec<Direction>>, bool) {
         let mut visited: HashMap<Coordinate, Vec<Direction>> = HashMap::new();
 
         loop {

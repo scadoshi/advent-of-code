@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 #[derive(Debug)]
-pub struct Grid {
+struct Grid {
     tiles: Vec<Vec<char>>,
     rows: usize,
     cols: usize,
@@ -9,7 +9,7 @@ pub struct Grid {
 
 impl Grid {
     #[allow(dead_code)]
-    pub fn new() -> Self {
+    fn new() -> Self {
         let tiles: Vec<Vec<char>> = include_str!("..\\inputs\\day08.txt")
             .lines()
             .map(|line| line.chars().collect())
@@ -21,20 +21,20 @@ impl Grid {
 }
 
 #[derive(Debug)]
-pub struct Delta {
+struct Delta {
     row: i32,
     col: i32,
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone)]
-pub struct Coordinate {
+struct Coordinate {
     row: usize,
     col: usize,
 }
 
 impl Coordinate {
     #[allow(dead_code)]
-    pub fn new(grid: &Grid, row: i32, col: i32) -> Option<Self> {
+    fn new(grid: &Grid, row: i32, col: i32) -> Option<Self> {
         let unchecked_coordinate = Delta { row, col };
         if unchecked_coordinate.row < 0
             || unchecked_coordinate.row >= grid.rows as i32
@@ -49,14 +49,14 @@ impl Coordinate {
         })
     }
 
-    pub fn antidelta(coordinate1: &Coordinate, coordinate2: &Coordinate) -> Delta {
+    fn antidelta(coordinate1: &Coordinate, coordinate2: &Coordinate) -> Delta {
         let row = coordinate1.row as i32 - coordinate2.row as i32;
         let col = coordinate1.col as i32 - coordinate2.col as i32;
 
         Delta { row, col }
     }
 
-    pub fn traverse(grid: &Grid, coordinate: &Coordinate, delta: &Delta, steps: i32) -> Option<Self> {
+    fn traverse(grid: &Grid, coordinate: &Coordinate, delta: &Delta, steps: i32) -> Option<Self> {
         let row = coordinate.row as i32 + (delta.row * steps);
         let col = coordinate.col as i32 + (delta.col * steps);
 
@@ -64,7 +64,7 @@ impl Coordinate {
     }
 
     #[allow(dead_code)]
-    pub fn nearest_antinode_position(
+    fn nearest_antinode_position(
         pivot_coordinate: &Coordinate,
         evaluate_coordinate: &Coordinate,
         grid: &Grid,
@@ -75,7 +75,7 @@ impl Coordinate {
     }
 
     #[allow(dead_code)]
-    pub fn all_antinode_positions(
+    fn all_antinode_positions(
         pivot_coordinate: &Coordinate,
         evaluate_coordinate: &Coordinate,
         grid: &Grid,

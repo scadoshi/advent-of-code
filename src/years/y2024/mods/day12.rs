@@ -3,14 +3,14 @@ use std::collections::HashSet;
 use std::collections::VecDeque;
 
 #[derive(Debug)]
-pub struct Map {
+struct Map {
     grid: Vec<Vec<char>>,
     height: usize,
     width: usize,
 }
 
 impl Map {
-    pub fn new(grid: Vec<Vec<char>>) -> Self {
+    fn new(grid: Vec<Vec<char>>) -> Self {
         let height = grid.len();
         let width = grid[0].len();
         Map {
@@ -20,7 +20,7 @@ impl Map {
         }
     }
 
-    pub fn from_input() -> Self {
+    fn from_input() -> Self {
         Map::new(
             std::fs::read_to_string("src/years/y2024/inputs/day12.txt")
                 .expect("Error reading file")
@@ -30,11 +30,11 @@ impl Map {
         )
     }
 
-    pub fn get_char(&self, coordinate: &Coordinate) -> char {
+    fn get_char(&self, coordinate: &Coordinate) -> char {
         self.grid[coordinate.row][coordinate.col]
     }
 
-    pub fn build_regions(&self) -> Vec<HashSet<Coordinate>> {
+    fn build_regions(&self) -> Vec<HashSet<Coordinate>> {
         let directions = [
             Delta::new(-1, 0), // up
             Delta::new(1, 0), // down
@@ -75,25 +75,25 @@ impl Map {
 }
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
-pub struct Coordinate {
+struct Coordinate {
     row: usize,
     col: usize,
 }
 
 impl Coordinate {
-    pub fn new(row: isize, col: isize, map: &Map) -> Option<Coordinate> {
+    fn new(row: isize, col: isize, map: &Map) -> Option<Coordinate> {
         Delta::new(row, col).to_coordinate(map)
     }
 
-    pub fn to_delta(&self) -> Delta {
+    fn to_delta(&self) -> Delta {
         Delta::new(self.row as isize, self.col as isize)
     }
 
-    pub fn traverse(&self, delta: &Delta, map: &Map) -> Option<Coordinate> {
+    fn traverse(&self, delta: &Delta, map: &Map) -> Option<Coordinate> {
         self.to_delta().add_delta(delta).to_coordinate(map)
     }
 
-    pub fn perimeter(&self, map: &Map) -> usize {
+    fn perimeter(&self, map: &Map) -> usize {
         let directions: [Delta; 4] = [
             Delta::new(-1, 0), // up
             Delta::new(1, 0),  // down
@@ -117,7 +117,7 @@ impl Coordinate {
         total
     }
 
-    pub fn adjacent(&self, coordinate: &Coordinate) -> bool {
+    fn adjacent(&self, coordinate: &Coordinate) -> bool {
         let row_diff = (self.row as isize - coordinate.row as isize).abs();
         let col_diff = (self.col as isize - coordinate.col as isize).abs();
 
@@ -129,17 +129,17 @@ impl Coordinate {
     }
 }
 
-pub struct Delta {
+struct Delta {
     row: isize,
     col: isize,
 }
 
 impl Delta {
-    pub fn new(row: isize, col: isize) -> Self {
+    fn new(row: isize, col: isize) -> Self {
         Delta { row, col }
     }
 
-    pub fn to_coordinate(&self, map: &Map) -> Option<Coordinate> {
+    fn to_coordinate(&self, map: &Map) -> Option<Coordinate> {
         if self.row >= 0
             && self.row < map.height as isize
             && self.col >= 0
@@ -154,7 +154,7 @@ impl Delta {
         }
     }
 
-    pub fn add_delta(&self, delta: &Delta) -> Self {
+    fn add_delta(&self, delta: &Delta) -> Self {
         Delta {
             row: self.row + delta.row,
             col: self.col + delta.col,

@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[allow(dead_code)]
 #[derive(PartialEq, Debug)]
-pub struct Instruction {
+struct Instruction {
     coordinate1: (i32, i32),
     coordinate2: (i32, i32),
     toggle: Option<bool>,
@@ -10,7 +10,7 @@ pub struct Instruction {
 
 impl Instruction {
     #[allow(dead_code)]
-    pub fn new(instruction_string: &str) -> Self {
+    fn new(instruction_string: &str) -> Self {
         // turn on 887,9 through 959,629
         // ['turn', 'on', '887,9', 'through', '959,629']
         // ['887,9', '959,629']
@@ -49,13 +49,13 @@ impl Instruction {
 
 #[allow(dead_code)]
 #[derive(PartialEq, Debug)]
-pub struct Instructions {
+struct Instructions {
     list: Vec<Instruction>,
 }
 
 impl Instructions {
     #[allow(dead_code)]
-    pub fn new(instructions_str: &str) -> Self {
+    fn new(instructions_str: &str) -> Self {
         let list: Vec<Instruction> = instructions_str
             .lines()
             .map(|instruction_str| Instruction::new(instruction_str))
@@ -66,13 +66,13 @@ impl Instructions {
 
 #[allow(dead_code)]
 #[derive(PartialEq, Debug)]
-pub struct Lights {
+struct Lights {
     coordinate_list: HashMap<(i32, i32), bool>,
 }
 
 impl Lights {
     #[allow(dead_code)]
-    pub fn new() -> Self {
+    fn new() -> Self {
         let coordinate_list = (0..1000)
             .flat_map(|x| (0..1000).map(move |y| ((x, y), false)))
             .collect();
@@ -80,7 +80,7 @@ impl Lights {
     }
 
     #[allow(dead_code)]
-    pub fn toggle(self: &mut Self, instruction: Instruction) {
+    fn toggle(self: &mut Self, instruction: Instruction) {
         for col in instruction.coordinate1.0..=instruction.coordinate2.0 {
             for row in instruction.coordinate1.1..=instruction.coordinate2.1 {
                 self.coordinate_list.insert(
@@ -96,13 +96,13 @@ impl Lights {
 
 #[allow(dead_code)]
 #[derive(PartialEq, Debug)]
-pub struct Lights2 {
+struct Lights2 {
     coordinate_list: HashMap<(i32, i32), i32>,
 }
 
 impl Lights2 {
     #[allow(dead_code)]
-    pub fn new() -> Self {
+    fn new() -> Self {
         let coordinate_list = (0..1000)
             .flat_map(|x| (0..1000).map(move |y| ((x, y), 0)))
             .collect();
@@ -110,7 +110,7 @@ impl Lights2 {
     }
 
     #[allow(dead_code)]
-    pub fn toggle(self: &mut Self, instruction: Instruction) {
+    fn toggle(self: &mut Self, instruction: Instruction) {
         for col in instruction.coordinate1.0..=instruction.coordinate2.0 {
             for row in instruction.coordinate1.1..=instruction.coordinate2.1 {
                 self.coordinate_list.entry((row, col)).and_modify(|v| {

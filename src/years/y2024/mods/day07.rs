@@ -1,5 +1,5 @@
 #[allow(dead_code)]
-pub fn input() -> Vec<(Vec<i64>, i64)> {
+fn input() -> Vec<(Vec<i64>, i64)> {
     include_str!("..\\inputs\\day07.txt")
         .lines()
         .fold(Vec::new(), |mut equations, line| {
@@ -17,14 +17,14 @@ pub fn input() -> Vec<(Vec<i64>, i64)> {
 }
 
 #[derive(Debug)]
-pub enum Operator {
+enum Operator {
     Add,
     Multiply,
     Concatenate,
 }
 
 #[allow(dead_code)]
-pub fn numbers_to_operators(nums: &Vec<usize>) -> Vec<Operator> {
+fn numbers_to_operators(nums: &Vec<usize>) -> Vec<Operator> {
     nums.iter()
         .map(|char| match char {
             0 => Operator::Add,
@@ -36,7 +36,7 @@ pub fn numbers_to_operators(nums: &Vec<usize>) -> Vec<Operator> {
 }
 
 #[allow(dead_code)]
-pub fn do_operation(num1: i64, num2: i64, operator: Operator) -> i64 {
+fn do_operation(num1: i64, num2: i64, operator: Operator) -> i64 {
     match operator {
         Operator::Add => num1 + num2,
         Operator::Multiply => num1 * num2,
@@ -50,7 +50,7 @@ pub fn do_operation(num1: i64, num2: i64, operator: Operator) -> i64 {
 // Note: numbers_to_operators() has been updated and is now incompatible here
 // 
 // #[allow(dead_code)]
-// pub fn operator_combinations_binary_method(numbers: &Vec<i64>) -> Vec<Vec<Operator>> {
+// fn operator_combinations_binary_method(numbers: &Vec<i64>) -> Vec<Vec<Operator>> {
 //     let position_count = numbers.len() - 1;
 //     let combination_count = 2_i32.pow(position_count as u32);
 //     let operator_combinations = (0..combination_count)
@@ -60,7 +60,7 @@ pub fn do_operation(num1: i64, num2: i64, operator: Operator) -> i64 {
 // }
 
 #[allow(dead_code)]
-pub fn all_combinations(position_count: usize, element_count: usize, current: &mut Vec<usize>) -> Vec<Vec<usize>> {
+fn all_combinations(position_count: usize, element_count: usize, current: &mut Vec<usize>) -> Vec<Vec<usize>> {
     let mut combinations: Vec<Vec<usize>> = Vec::new();
 
     if position_count == 0 {
@@ -78,7 +78,7 @@ pub fn all_combinations(position_count: usize, element_count: usize, current: &m
 }
 
 #[allow(dead_code)]
-pub fn operator_combinations(numbers: &Vec<i64>, operators: &Vec<Operator>) -> Vec<Vec<Operator>> {
+fn operator_combinations(numbers: &Vec<i64>, operators: &Vec<Operator>) -> Vec<Vec<Operator>> {
     let position_count = numbers.len() - 1;
     let operator_count = operators.len();
 
@@ -89,7 +89,7 @@ pub fn operator_combinations(numbers: &Vec<i64>, operators: &Vec<Operator>) -> V
 }
 
 #[allow(dead_code)]
-pub fn numbers_reach_target(numbers: &Vec<i64>, target: &i64, operators: &Vec<Operator>) -> bool {
+fn numbers_reach_target(numbers: &Vec<i64>, target: &i64, operators: &Vec<Operator>) -> bool {
     let operator_combinations = operator_combinations(&numbers, operators);
     let mut result = false;
 

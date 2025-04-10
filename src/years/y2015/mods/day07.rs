@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct Instruction {
+struct Instruction {
     source1: Option<String>,
     source2: Option<String>,
     operation: Option<String>,
@@ -10,7 +10,7 @@ pub struct Instruction {
 }
 
 impl Instruction {
-    pub fn new(instruction: &str) -> Self {
+    fn new(instruction: &str) -> Self {
         let mut keys: Vec<String> = instruction
             .split_whitespace()
             .map(|x| x.to_string())
@@ -53,12 +53,12 @@ impl Instruction {
 }
 
 #[derive(Debug)]
-pub struct Instructions {
+struct Instructions {
     list: Vec<Instruction>,
 }
 
 impl Instructions {
-    pub fn new(instructions_str: &str) -> Self {
+    fn new(instructions_str: &str) -> Self {
         let list = instructions_str
             .lines()
             .map(|line| Instruction::new(line))
@@ -69,7 +69,7 @@ impl Instructions {
 }
 
 #[allow(dead_code)]
-pub fn get_signal(
+fn get_signal(
     cache: &mut HashMap<String, i32>,
     all_instructions: &Instructions,
     instruction_to_run: &Instruction,

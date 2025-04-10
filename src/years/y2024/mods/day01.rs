@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
 #[derive(Debug)]
-pub struct Input {
+struct Input {
     left_list: Vec<i32>,
     right_list: Vec<i32>,
 }
 
 impl Input {
-    pub fn new() -> Self {
+    fn new() -> Self {
         let input = include_str!("..\\inputs\\day01.txt");
 
         let (mut left_list, mut right_list): (Vec<i32>, Vec<i32>) = input

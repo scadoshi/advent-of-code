@@ -9,14 +9,14 @@ lazy_static! {
 }
 
 #[allow(dead_code)]
-pub fn input() -> Vec<char> {
+fn input() -> Vec<char> {
     include_str!("..\\inputs\\day03.txt")
         .chars()
         .collect::<Vec<char>>()
 }
 
 #[allow(dead_code)]
-pub fn mul_match_incr(win: &String) -> i32 {
+fn mul_match_incr(win: &String) -> i32 {
     if let Some(caps) = MUL_PATTERN.captures(&win) {
         let (num1, num2) = (
             caps[1].parse::<i32>().unwrap(),
@@ -29,7 +29,7 @@ pub fn mul_match_incr(win: &String) -> i32 {
 }
 
 #[allow(dead_code)]
-pub fn intake_check(win: &String, curr_state: &bool) -> bool {
+fn intake_check(win: &String, curr_state: &bool) -> bool {
     if DONT_PATTERN.is_match(win) {
         false
     } else if DO_PATTERN.is_match(win) {

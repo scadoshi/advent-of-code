@@ -1,24 +1,24 @@
 const INPUT_FILE_PATH: &str = "src/years/y2024/inputs/day09.txt";
 
-pub fn input_to_string() -> String {
+fn input_to_string() -> String {
     std::fs::read_to_string(INPUT_FILE_PATH).expect(&format!("File not found at {INPUT_FILE_PATH}"))
 }
 
 #[allow(dead_code)]
-pub struct File {
+struct File {
     id: u64,
     location: usize,
     size: usize,
 }
 
 #[derive(Clone)]
-pub struct Disk {
+struct Disk {
     files: Vec<Option<u64>>,
 }
 
 impl Disk {
     #[allow(dead_code)]
-    pub fn new(input: String) -> Self {
+    fn new(input: String) -> Self {
         let mut file_id = 0;
         input
             .chars()
@@ -40,7 +40,7 @@ impl Disk {
             })
     }
 
-    pub fn compact_disk_via_fragmenting_files(self) -> Self {
+    fn compact_disk_via_fragmenting_files(self) -> Self {
         let mut new_disk = self.clone();
 
         while let (Some(free_i), Some(content_i)) = (
@@ -62,7 +62,7 @@ impl Disk {
     }
 
     #[allow(dead_code)]
-    pub fn find_file_from_right(&self, start_at: &usize) -> Option<(u64, usize, usize)> {
+    fn find_file_from_right(&self, start_at: &usize) -> Option<(u64, usize, usize)> {
         // Find the rightmost file up to start_at position
         let position = self.files[..=*start_at]
             .iter()
@@ -87,14 +87,14 @@ impl Disk {
     }
 
     #[allow(dead_code)]
-    pub fn find_free_space_of_size(&self, size: usize, up_to_position: usize) -> Option<usize> {
+    fn find_free_space_of_size(&self, size: usize, up_to_position: usize) -> Option<usize> {
         self.files[..up_to_position]
             .windows(size)
             .position(|window| window.iter().all(|element| element.is_none()))
     }
 
     #[allow(dead_code)]
-    pub fn compact_disk_via_migrating_files(self) -> Self {
+    fn compact_disk_via_migrating_files(self) -> Self {
         let mut start_at = self.files.len() - 1;
         let mut new_disk: Disk = self.clone();
 
@@ -133,7 +133,7 @@ impl Disk {
     }
 
     #[allow(dead_code)]
-    pub fn files_to_string(files: &Vec<Option<u64>>) -> String {
+    fn files_to_string(files: &Vec<Option<u64>>) -> String {
         files.iter().map(|element| {
             if element.is_none() {'.'.to_string()}
             else {element.unwrap().to_string()}
@@ -141,7 +141,7 @@ impl Disk {
     }
 
     #[allow(dead_code)]
-    pub fn calculate_checksum(self) -> u64 {
+    fn calculate_checksum(self) -> u64 {
         self.files
             .iter()
             .enumerate()

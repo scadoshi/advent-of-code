@@ -1,5 +1,5 @@
 #[allow(dead_code)]
-pub fn delta_vector(vector: &Vec<i32>) -> Vec<i32> {
+fn delta_vector(vector: &Vec<i32>) -> Vec<i32> {
     vector
         .windows(2)
         .map(|win| win[0] - win[1])
@@ -7,7 +7,7 @@ pub fn delta_vector(vector: &Vec<i32>) -> Vec<i32> {
 }
 
 #[allow(dead_code)]
-pub fn delta_vector_is_safe(delta_vector: Vec<i32>) -> bool {
+fn delta_vector_is_safe(delta_vector: Vec<i32>) -> bool {
     let first_sign = delta_vector[0].signum();
     for delta in delta_vector {
         let current_sign = delta.signum();
@@ -23,7 +23,7 @@ pub fn delta_vector_is_safe(delta_vector: Vec<i32>) -> bool {
 }
 
 #[allow(dead_code)]
-pub fn get_reports_from_input() -> Vec<Vec<i32>> {
+fn get_reports_from_input() -> Vec<Vec<i32>> {
     include_str!("..\\inputs\\day02.txt")
         .lines()
         .map(|line| {
@@ -35,7 +35,7 @@ pub fn get_reports_from_input() -> Vec<Vec<i32>> {
 }
 
 #[allow(dead_code)]
-pub fn categorize_reports(reports: Vec<Vec<i32>>) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
+fn categorize_reports(reports: Vec<Vec<i32>>) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
     reports.iter().fold(
         (Vec::new(), Vec::new()), |mut reports_categorized, report| {
             if delta_vector_is_safe(delta_vector(&report)) {

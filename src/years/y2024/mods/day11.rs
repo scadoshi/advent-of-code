@@ -1,19 +1,19 @@
 #[allow(dead_code)]
-pub fn even_digited(number: usize) -> bool {
+fn even_digited(number: usize) -> bool {
     number.to_string().len() % 2 == 0
 }
 
 use std::collections::HashMap;
 
 #[allow(dead_code)]
-pub struct StoneSystem {
+struct StoneSystem {
     stones: Vec<usize>,
     cache: HashMap<(usize, usize), usize>,
 }
 
 impl StoneSystem {
     #[allow(dead_code)]
-    pub fn new() -> Self {
+    fn new() -> Self {
         StoneSystem {
             stones: std::fs::read_to_string("src/years/y2024/inputs/day11.txt")
                 .unwrap()
@@ -25,7 +25,7 @@ impl StoneSystem {
     }
 
     #[allow(dead_code)]
-    pub fn blink_stones(&mut self, blink_count: usize) -> usize {
+    fn blink_stones(&mut self, blink_count: usize) -> usize {
         self.blink_alot_r(self.stones.clone(), blink_count)
     }
 
@@ -55,7 +55,7 @@ impl StoneSystem {
 }
 
 #[allow(dead_code)]
-pub fn blink(number: usize) -> Vec<usize> {
+fn blink(number: usize) -> Vec<usize> {
     if number == 0 {
         return vec![1];
     } else if even_digited(number) {
@@ -83,7 +83,7 @@ pub fn part_two() {
 }
 
 #[cfg(test)]
-pub mod test {
+mod test {
     use super::*;
 
     #[ignore]

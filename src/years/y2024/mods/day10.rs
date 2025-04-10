@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 #[derive(Debug)]
-pub struct Map {
+struct Map {
     grid: Vec<Vec<usize>>,
     row_limit: usize,
     col_limit: usize,
@@ -8,7 +8,7 @@ pub struct Map {
 
 impl Map {
     #[allow(dead_code)]
-    pub fn from_string(input: String) -> Self {
+    fn from_string(input: String) -> Self {
         let grid: Vec<Vec<usize>> = input.lines()
             .map(|line| line.chars()
                 .map(|c| 
@@ -23,12 +23,12 @@ impl Map {
     }
 
     #[allow(dead_code)]
-    pub fn from_input() -> Self {
+    fn from_input() -> Self {
         Self::from_string(std::fs::read_to_string("src/years/y2024/inputs/day10.txt").unwrap())
     }
 
     #[allow(dead_code)]
-    pub fn collect_start_positions(&self) -> Vec<Coordinate> {
+    fn collect_start_positions(&self) -> Vec<Coordinate> {
         self.grid.iter().enumerate()
             .fold(Vec::new(), |mut start_positions, (row_i, row)| {
                 start_positions.extend(row.iter().enumerate().filter_map(|(col_i, col)| {
@@ -45,26 +45,26 @@ impl Map {
 
 #[derive(Debug)]
 #[allow(dead_code)]
-pub struct Delta {
+struct Delta {
     row_d: isize,
     col_d: isize,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 #[allow(dead_code)]
-pub struct Coordinate {
+struct Coordinate {
     row_i: usize,
     col_i: usize
 }
 
 impl Delta {
     #[allow(dead_code)]
-    pub fn new(row_d: isize, col_d: isize) -> Self {
+    fn new(row_d: isize, col_d: isize) -> Self {
         Self { row_d, col_d }
     }
 
     #[allow(dead_code)]
-    pub fn to_coordinate(&self, map:&Map) -> Option<Coordinate> {
+    fn to_coordinate(&self, map:&Map) -> Option<Coordinate> {
         if self.row_d < 0 || self.col_d < 0 || self.row_d >= map.row_limit as isize || self.col_d >= map.col_limit as isize {
             None
         } else {
@@ -76,7 +76,7 @@ impl Delta {
 
 impl Coordinate {
     #[allow(dead_code)]
-    pub fn new(row_i: usize, col_i: usize) -> Self {
+    fn new(row_i: usize, col_i: usize) -> Self {
         Self {
             row_i,
             col_i
@@ -84,7 +84,7 @@ impl Coordinate {
     }
 
     #[allow(dead_code)]
-    pub fn move_coordinate(&self, delta: Delta, map: &Map) -> Option<Coordinate> {
+    fn move_coordinate(&self, delta: Delta, map: &Map) -> Option<Coordinate> {
         let row_d = self.row_i as isize + delta.row_d;
         let col_d = self.col_i as isize + delta.col_d;
         Delta::new(row_d, col_d).to_coordinate(map)
@@ -92,7 +92,7 @@ impl Coordinate {
 
 
     #[allow(dead_code)]
-    pub fn count_reaching_paths(&self, map: &Map) -> i32 {
+    fn count_reaching_paths(&self, map: &Map) -> i32 {
         let mut total = 0;
         let current_height = self.get_height(map);        
 
@@ -118,7 +118,7 @@ impl Coordinate {
     }
 
     #[allow(dead_code)]
-    pub fn count_reachable_points(&self, map: &Map) -> i32 {
+    fn count_reachable_points(&self, map: &Map) -> i32 {
         let mut visited = Vec::new();
         self.count_reachable_points_recursive(map, &mut visited)
     }
@@ -157,7 +157,7 @@ impl Coordinate {
 
 
     #[allow(dead_code)]
-    pub fn get_height(&self, map: &Map) -> usize {
+    fn get_height(&self, map: &Map) -> usize {
         map.grid[self.row_i][self.col_i]
     }
 }
@@ -185,7 +185,7 @@ mod tests {
     
     #[ignore]
     #[allow(dead_code)]
-    pub fn test_start_positions() {
+    fn test_start_positions() {
         let map = Map::from_string("103\n\
                                                 056\n\
                                                 709\n\
@@ -197,7 +197,7 @@ mod tests {
 
     #[ignore]
     #[allow(dead_code)]
-    pub fn test_count_reaching_paths() {
+    fn test_count_reaching_paths() {
         let test_input = "012089000\n\
                                   083078890\n\
                                   804569000\n\
@@ -211,7 +211,7 @@ mod tests {
 
     #[ignore]
     #[allow(dead_code)]
-    pub fn test_basic_map() {
+    fn test_basic_map() {
         let test_input = "0123\n\
                                   9994\n\
                                   9895\n\
@@ -224,7 +224,7 @@ mod tests {
 
     #[ignore]
     #[allow(dead_code)]
-    pub fn test_single_trailhead() {
+    fn test_single_trailhead() {
         let test_input = "9990999\n\
                                   9991999\n\
                                   9992999\n\
@@ -241,7 +241,7 @@ mod tests {
     // This test might help identify if we're double-counting paths
     #[ignore]
     #[allow(dead_code)]
-    pub fn test_simple_path() {
+    fn test_simple_path() {
         let test_input = "01\n\
                                   23\n\
                                   45\n\
@@ -255,7 +255,7 @@ mod tests {
 
     #[ignore]
     #[allow(dead_code)]
-    pub fn test_near_misses() {
+    fn test_near_misses() {
         let test_input = "01234567800\n\
                                   09345078000\n\
                                   00406080000\n\

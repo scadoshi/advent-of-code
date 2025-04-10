@@ -1,5 +1,5 @@
 #[allow(dead_code)]
-/// does both parts
+/// both parts
 pub fn part_one() {
     let mut first_neg_i: Option<usize> = None;
     let floor_num = include_str!("..\\inputs\\day01.txt")

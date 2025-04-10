@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 #[allow(dead_code)]
-pub fn rules() -> HashMap<i32, Vec<i32>> {
+fn rules() -> HashMap<i32, Vec<i32>> {
     include_str!("..\\inputs\\day05.txt")
         .lines()
         .filter(|line| line.contains('|'))
@@ -19,7 +19,7 @@ pub fn rules() -> HashMap<i32, Vec<i32>> {
 }
 
 #[allow(dead_code)]
-pub fn seqs() -> Vec<Vec<i32>> {
+fn seqs() -> Vec<Vec<i32>> {
     include_str!("..\\inputs\\day05.txt")
         .lines()
         .filter_map(|line| {
@@ -67,7 +67,7 @@ pub fn part_one() {
 /// * Boolean indicating if sequence is valid
 /// * Option with index of violating number (if invalid)
 /// * Option with index of violated rule (if invalid)
-pub fn seq_is_valid(seq: &[i32], rules: &HashMap<i32, Vec<i32>>) -> (bool, Option<usize>, Option<usize>) {
+fn seq_is_valid(seq: &[i32], rules: &HashMap<i32, Vec<i32>>) -> (bool, Option<usize>, Option<usize>) {
     // Initialize seen numbers with first element which is always valid by definition
     let mut seen: Vec<i32> = vec![seq[0]];
 
