@@ -88,4 +88,24 @@ pub fn part_one() {
 }
 
 #[allow(dead_code)]
-pub fn part_two() {}
+pub fn part_two() {
+    let input = input();
+
+    let result = input
+        .iter()
+        .fold(Vec::new(), |mut counts_list: Vec<HashMap<String, i32>>, game| {
+            let mut counts: HashMap<String, i32> = HashMap::new();
+            game.moves.iter().for_each(|x| {
+                if !counts.contains_key(&x.color) || x.count > *counts.get(&x.color).unwrap() {
+                    counts.insert(x.color.clone(), x.count);
+                }
+            });
+            counts_list.push(counts);
+            counts_list
+        })
+        .iter()
+        .map(|x| x.values().product::<i32>())
+        .sum::<i32>();
+
+    println!("{}", result);
+}
