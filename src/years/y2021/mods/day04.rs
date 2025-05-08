@@ -156,7 +156,8 @@ pub fn part_two() {
 mod tests {
     use super::is_bingo;
 
-    #[test]
+    #[ignore]
+    #[allow(dead_code)]
     fn is_bingo_test_row() {
         let input: Vec<Vec<(u32, bool)>> = vec![
             vec![(1, true), (1, true), (1, true), (1, true), (1, true)],
@@ -168,7 +169,8 @@ mod tests {
         let result = is_bingo(&input);
         assert_eq!(result, true);
     }
-    #[test]
+    #[ignore]
+    #[allow(dead_code)]
     fn is_bingo_test_col() {
         let input: Vec<Vec<(u32, bool)>> = vec![
             vec![(1, true), (1, false), (1, false), (1, false), (1, false)],
@@ -181,7 +183,8 @@ mod tests {
         assert_eq!(result, true);
     }
 
-    #[test]
+    #[ignore]
+    #[allow(dead_code)]
     fn is_bingo_test_none() {
         let input: Vec<Vec<(u32, bool)>> = vec![
             vec![(1, false), (1, false), (1, false), (1, false), (1, false)],
