@@ -219,7 +219,7 @@ pub fn part_two() {
         let location_ranges = seed_range.to_location_ranges(&arml, &mut log);
 
         for range in location_ranges {
-            if lowest_location.is_none() || range.first < lowest_location.unwrap() {
+            if lowest_location.is_none() || (range.first < lowest_location.unwrap() && range.first != 0) {
                 lowest_location = Some(range.first);
             }
         }
