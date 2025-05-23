@@ -1,113 +1,213 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
+use std::fmt::{Debug, Formatter};
 
-fn ppoints() -> Vec<(usize, usize)> {
-    include_str!("..\\inputs\\day06.txt")
-        .lines()
-        .map(|line| {
-            let (x, y) = line
-                .split_once(',')
-                .expect("Failed to split_once by a comma: ','");
-            (
-                x.trim()
-                    .parse()
-                    .expect(format!("Failed to parse {} to usize", x).as_str()),
-                y.trim()
-                    .parse()
-                    .expect(format!("Failed to parse {} to usize", y).as_str()),
-            )
-        })
-        .collect()
+#[derive(PartialEq, Eq, Hash, Clone)]
+struct Point {
+    col: u32,
+    row: u32,
 }
 
-fn distance(point1: &(usize, usize), point2: &(usize, usize)) -> usize {
-    ((point1.0 as isize - point2.0 as isize).abs()
-        + (point1.1 as isize - point2.1 as isize).abs()) as usize
+impl Point {
+    fn new(col: u32, row: u32) -> Self {
+        Self { col, row }
+    }
+
+    fn manhattan_distance(&self, other_point: &Point) -> u32 {
+        ((self.col as i16 - other_point.col as i16).abs()
+            + (self.row as i16 - other_point.row as i16).abs()) as u32
+    }
 }
 
+impl Debug for Point {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", self.col, self.row)
+    }
+}
+
+#[derive(Debug)]
 #[allow(dead_code)]
+struct Bounds {
+    left: u32,
+    right: u32,
+    down: u32,
+    up: u32,
+}
+
+impl Bounds {
+    fn bigger(&self, increment: u32) -> Bounds {
+        Bounds {
+            left: self.left + increment,
+            right: self.right + increment,
+            down: self.down + increment,
+            up: self.up + increment,
+        }
+    }
+
+    fn empty_points(&self, points: &HashSet<Point>) -> HashSet<Point> {
+        let mut empty_points: HashSet<Point> = HashSet::new();
+        for col in self.left..=self.right {
+            for row in self.up..=self.down {
+                let eval_point = Point::new(col, row);
+                if !points.contains(&eval_point) {
+                    empty_points.insert(eval_point);
+                }
+            }
+        }
+        empty_points
+    }
+}
+
+#[derive(Debug)]
+enum InputGetterError {
+    NotEnoughComma,
+    TooMuchComma,
+    FailedToParseu32,
+}
+
+#[derive(Default)]
+struct InputGetter {}
+impl InputGetter {
+    fn get_input(&self) -> Result<HashSet<Point>, InputGetterError> {
+        include_str!("../inputs/day08.txt")
+            .lines()
+            .filter(|x| !x.starts_with("//"))
+            .map(|x| {
+                if let Some(parts) = x.split_once(",") {
+                    if parts.1.contains(",") {
+                        return Err(InputGetterError::TooMuchComma);
+                    }
+
+                    let col = parts
+                        .0
+                        .parse::<u32>()
+                        .map_err(|_| InputGetterError::FailedToParseu32)?;
+                    let row = parts
+                        .1
+                        .parse::<u32>()
+                        .map_err(|_| InputGetterError::FailedToParseu32)?;
+
+                    Ok(Point::new(col, row))
+                } else {
+                    return Err(InputGetterError::NotEnoughComma);
+                }
+            })
+            .collect::<Result<HashSet<Point>, InputGetterError>>()
+    }
+}
+
+trait PointHandling {
+    fn get_bounds(&self) -> Bounds;
+    fn distance_map(&self, points: &HashSet<Point>) -> HashMap<Point, HashSet<Point>>;
+}
+
+impl PointHandling for HashSet<Point> {
+    fn get_bounds(&self) -> Bounds {
+        let mut left: Option<u32> = None;
+        let mut right: Option<u32> = None;
+        let mut up: Option<u32> = None;
+        let mut down: Option<u32> = None;
+
+        for point in self {
+            if left.is_none() || point.col < left.unwrap() {
+                left = Some(point.col);
+            }
+            if right.is_none() || point.col > right.unwrap() {
+                right = Some(point.col);
+            }
+            if up.is_none() || point.row < up.unwrap() {
+                up = Some(point.row);
+            }
+            if down.is_none() || point.row > down.unwrap() {
+                down = Some(point.row);
+            }
+        }
+
+        Bounds {
+            left: left.unwrap(),
+            right: right.unwrap(),
+            up: up.unwrap(),
+            down: down.unwrap(),
+        }
+    }
+
+    fn distance_map(&self, points: &HashSet<Point>) -> HashMap<Point, HashSet<Point>> {
+        // first process
+        // filtering & finding
+        let result: HashMap<Point, Point> = self
+            .iter()
+            .filter_map(|empty_point| {
+                let mut lowest_distance: Option<u32> = None;
+                // contains empty_point and the nearest_point
+                let mut result: Option<(Point, Point)> = None;
+
+                for current_point in points.iter() {
+                    let current_distance = empty_point.manhattan_distance(current_point);
+
+                    // if empty_point has multiple points that tie for nearest
+                    // exclude from filter by returning None
+                    if lowest_distance.is_some() && current_distance == lowest_distance.unwrap() {
+                        return None;
+                    }
+                    // regular criteria for if the current_distance is less than lowest_distance
+                    if lowest_distance.is_none() || current_distance < lowest_distance.unwrap() {
+                        lowest_distance = Some(current_distance);
+                        result = Some((empty_point.clone(), current_point.clone()));
+                    }
+                }
+                result
+            })
+            .collect();
+
+        // second process
+        // grouping
+        let result: HashMap<Point, HashSet<Point>> = result.into_iter().fold(
+            HashMap::new(),
+            |mut map: HashMap<Point, HashSet<Point>>, (empty_point, nearest_point)| {
+                map.entry(nearest_point).or_default().insert(empty_point);
+                map
+            },
+        );
+        result
+    }
+}
+
 pub fn part_one() {
-    let ppoints = ppoints();
+    let ig = InputGetter::default();
+    let points_res = ig.get_input();
+    println!("points result: {:?}", points_res);
 
-    println!("{:?}", ppoints);
-    let (min_col, max_col) = (
-        ppoints
-            .iter()
-            .min_by_key(|(col, _)| col)
-            .expect("max col not found")
-            .0,
-        ppoints
-            .iter()
-            .max_by_key(|(col, _)| col)
-            .expect("min col not found")
-            .0,
-    );
-    let (min_row, max_row) = (
-        ppoints
-            .iter()
-            .min_by_key(|(_, row)| row)
-            .expect("max y not found")
-            .1,
-        ppoints
-            .iter()
-            .max_by_key(|(_, row)| row)
-            .expect("min y not found")
-            .1,
-    );
+    if let Some(points) = points_res.as_ref().ok() {
+        let bounds = points.get_bounds();
+        let empty_points = bounds.empty_points(&points);
+        let regular_map = empty_points.distance_map(points);
+        println!("regular map: {:?}", regular_map);
 
-    let mut std_grid: Vec<(usize, usize)> = Vec::new();
-    for col in min_col..=max_col {
-        for row in min_row..=max_row {
-            std_grid.push((col, row));
-        }
-    }
+        let big_bounds = bounds.bigger(1);
+        let big_empty_points = big_bounds.empty_points(points);
+        let big_map = big_empty_points.distance_map(points);
+        println!("big map: {:?}", big_map);
 
-    let mut gpoints_map: HashMap<(usize, usize), HashMap<(usize, usize), usize>> =
-        HashMap::new();
-    // map distance from every grid_point to every place_point
-    for gpoint in std_grid.iter() {
-        // if grid_point is a place_point we can ignore
-        if ppoints.contains(gpoint) {
-            continue;
-        }
+        // filters out points which had their nearest empty points increase in count (indicating infinite space)
+        let filtered_map: HashMap<Point, HashSet<Point>> = regular_map
+            .into_iter()
+            .filter(|(rkey, rpoints)| {
+                if let Some(bpoints) = big_map.get(rkey) {
+                    rpoints.len() == bpoints.len()
+                } else {
+                    false
+                }
+            })
+            .collect();
 
-        // the actual mapping process
-        for ppoint in ppoints.iter() {
-            *gpoints_map
-                .entry(*gpoint)
-                .or_default()
-                .entry(*ppoint)
-                .or_default() = distance(gpoint, ppoint);
-        }
-    }
-
-    let adj_gpoints_map: HashMap<(usize, usize), Option<(usize, usize)>> = gpoints_map
-        .into_iter()
-        .map(|(gpoint, map)| {
-            let min_dist = map.iter().map(|(_, dist)| dist).min().expect("min_dist not found");
-            let nearest_ppoint: Option<(usize, usize)> = 
-                if map.iter().filter(|(_, dist)| *dist == min_dist).count() > 1 {
-                None
-            } else {
-                Some(*map.iter().find(|(_, dist)| *dist == min_dist).expect("ppoint of min_dist not found").0)
-            };
-            (gpoint, nearest_ppoint)
-        })
-        .collect();
-
-    
-
-
-    
-    
-    
-    let d = 1000;
-    let mut big_bounds_grid: Vec<(usize, usize)> = Vec::new();
-    for col in min_col - d..=max_col + d {
-        for row in min_row - d..=max_row + d {
-            big_bounds_grid.push((col, row));
-        }
+        println!(
+            "{:?}",
+            filtered_map
+                .iter()
+                .max_by(|(_, apoints), (_, bpoints)| apoints.len().cmp(&bpoints.len()))
+        );
+    } else {
+        println!("points had an error: {:?}", points_res);
     }
 }
 
-#[allow(dead_code)]
 pub fn part_two() {}
