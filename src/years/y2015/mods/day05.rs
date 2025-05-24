@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 pub fn part_one() {
-    let input: Vec<String> = include_str!("..//inputs//day05.txt")
+    let input: Vec<String> = include_str!("../inputs/day05.txt")
         .lines()
         .map(|line| line.parse().unwrap())
         .collect();

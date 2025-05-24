@@ -2,7 +2,7 @@
 /// both parts
 pub fn part_one() {
     let mut first_neg_i: Option<usize> = None;
-    let floor_num = include_str!("..//inputs//day01.txt")
+    let floor_num = include_str!("../inputs/day01.txt")
         .chars()
         .enumerate()
         .fold(0, |mut floor_num, (i, dir)| {

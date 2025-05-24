@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 fn input() -> Vec<String> {
-    include_str!("..//inputs//day06.txt")
+    include_str!("../inputs/day06.txt")
         .lines()
         .map(|line| line.to_string())
         .collect()

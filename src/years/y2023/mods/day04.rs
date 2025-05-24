@@ -18,7 +18,7 @@ impl Scratcher {
 
     #[allow(dead_code)]
     fn input() -> Vec<Self> {
-        include_str!("..//inputs//day04.txt").lines().fold(
+        include_str!("../inputs/day04.txt").lines().fold(
             Vec::new(),
             |mut scratchers: Vec<Scratcher>, line| {
                 let id: u32 = line

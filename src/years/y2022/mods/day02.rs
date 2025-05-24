@@ -2,7 +2,7 @@
 pub fn part_one() {
     println!(
         "{}",
-        include_str!("..//inputs//day02.txt")
+        include_str!("../inputs/day02.txt")
             .lines()
             .map(|x| x.replace("X", "Rock"))
             .map(|x| x.replace("Y", "Paper"))
@@ -56,7 +56,7 @@ pub fn part_one() {
 pub fn part_two() {
     println!(
         "{}",
-        include_str!("..//inputs//day02.txt")
+        include_str!("../inputs/day02.txt")
             .lines()
             .map(|x| x.replace("X", "Lose"))
             .map(|x| x.replace("Y", "Draw"))

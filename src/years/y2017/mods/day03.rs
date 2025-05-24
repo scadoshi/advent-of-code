@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[allow(dead_code)]
 fn input() -> i32 {
-    include_str!("..//inputs//day03.txt")
+    include_str!("../inputs/day03.txt")
         .parse()
         .expect("error converting input to i32")
 }

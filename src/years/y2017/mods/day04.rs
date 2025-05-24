@@ -4,7 +4,7 @@ use std::collections::HashSet;
 pub fn part_one() {
     println!(
         "{}",
-        include_str!("..//inputs//day04.txt")
+        include_str!("../inputs/day04.txt")
             .lines()
             .filter(|line| {
                 let reg: Vec<&str> = line.split_whitespace().collect();
@@ -20,7 +20,7 @@ pub fn part_one() {
 pub fn part_two() {
     println!(
         "{}",
-        include_str!("..//inputs//day04.txt")
+        include_str!("../inputs/day04.txt")
             .lines()
             .filter(|line| {
                 let reg: Vec<&str> = line.split_whitespace().collect();

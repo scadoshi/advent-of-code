@@ -1,7 +1,7 @@
 fn input() -> Vec<String> {
     let mut output: Vec<String> = Vec::new();
     let mut group: String = String::from("");
-    for line in include_str!("..//inputs//day04.txt").lines() {
+    for line in include_str!("../inputs/day04.txt").lines() {
         match line {
             "" => {
                 output.push(group.clone());

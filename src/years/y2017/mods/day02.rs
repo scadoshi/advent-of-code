@@ -1,5 +1,5 @@
 fn input() -> Vec<Vec<i32>> {
-    include_str!("..//inputs//day02.txt")
+    include_str!("../inputs/day02.txt")
             .lines()
             .map(|line| line
                 .split_whitespace()

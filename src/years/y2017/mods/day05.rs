@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 pub fn part_one() {
-    let mut maze: Vec<isize> = include_str!("..//inputs//day05.txt")
+    let mut maze: Vec<isize> = include_str!("../inputs/day05.txt")
         .lines()
         .map(|x| x.parse::<isize>().unwrap())
         .collect();
@@ -20,7 +20,7 @@ pub fn part_one() {
 
 #[allow(dead_code)]
 pub fn part_two(){
-    let mut maze: Vec<isize> = include_str!("..//inputs//day05.txt")
+    let mut maze: Vec<isize> = include_str!("../inputs/day05.txt")
         .lines()
         .map(|x| x.parse::<isize>().unwrap())
         .collect();

@@ -9,7 +9,7 @@ fn append_and_hash(input: &str, appended: i32) -> String {
 
 #[allow(dead_code)]
 pub fn part_one() {
-    let input: &str = include_str!("..//inputs//day05.txt");
+    let input: &str = include_str!("../inputs/day05.txt");
     let mut appended = 0;
     let mut password = String::new();
 
@@ -25,7 +25,7 @@ pub fn part_one() {
 
 #[allow(dead_code)]
 pub fn part_two() {
-    let input: &str = include_str!("..//inputs//day05.txt");
+    let input: &str = include_str!("../inputs/day05.txt");
     let mut appended = 0;
     let mut password: Vec<char> = vec!['_'; 8];
 

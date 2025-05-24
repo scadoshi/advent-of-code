@@ -2,7 +2,7 @@
 pub fn part_one() {
     println!(
         "{:#?}",
-        include_str!("..//inputs//day01.txt")
+        include_str!("../inputs/day01.txt")
             .lines()
             .map(|x| x.parse::<i32>().unwrap())
             .collect::<Vec<i32>>()
@@ -16,7 +16,7 @@ pub fn part_one() {
 pub fn part_two() {
     println!(
         "{:#?}",
-        include_str!("..//inputs//day01.txt")
+        include_str!("../inputs/day01.txt")
             .lines()
             .map(|x| x.parse::<i32>().unwrap())
             .collect::<Vec<i32>>()

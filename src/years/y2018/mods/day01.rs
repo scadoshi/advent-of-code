@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 #[allow(dead_code)]
 fn input() -> Vec<i32> {
-    include_str!("..//inputs//day01.txt").lines()
+    include_str!("../inputs/day01.txt").lines()
     .map(|line| line.parse::<i32>().unwrap())
     .collect()
 }

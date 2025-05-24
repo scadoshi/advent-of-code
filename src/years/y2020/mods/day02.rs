@@ -2,7 +2,7 @@
 pub fn part_one() {
     println!(
         "{:?}",
-        include_str!("..//inputs//day02.txt")
+        include_str!("../inputs/day02.txt")
             .lines()
             .filter(|line| {
                 let [parameters, string] = line
@@ -41,7 +41,7 @@ pub fn part_one() {
 pub fn part_two() {
     println!(
         "{:?}",
-        include_str!("..//inputs//day02.txt")
+        include_str!("../inputs/day02.txt")
             .lines()
             .filter(|line| {
                 // get left and right sides

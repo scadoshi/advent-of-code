@@ -64,7 +64,7 @@ fn manhattan_distance(x: i32, y: i32) -> i32 {
 
 /// both parts
 pub fn part_one() {
-    let instructions: Vec<Movement> = include_str! {"..\\inputs\\day01.txt"}
+    let instructions: Vec<Movement> = include_str! {"../inputs/day01.txt"}
         .replace(',', "")
         .split_whitespace()
         .map(|x| Movement::new(x))

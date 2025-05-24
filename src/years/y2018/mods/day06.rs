@@ -16,6 +16,24 @@ impl Point {
         ((self.col as i16 - other_point.col as i16).abs()
             + (self.row as i16 - other_point.row as i16).abs()) as u32
     }
+
+    fn is_boundless(&self, empty_points: &HashSet<Point>, bounds: &Bounds) -> bool {
+        // point itself is on boundary
+        if [bounds.left, bounds.right].contains(&self.col)
+                || [bounds.top, bounds.bottom].contains(&self.row)
+            {
+                return true;
+            }
+        // one of its empty points is on boundary
+        for empty_point in empty_points {
+            if [bounds.left, bounds.right].contains(&empty_point.col)
+                || [bounds.top, bounds.bottom].contains(&empty_point.row)
+            {
+                return true;
+            }
+        }
+        false
+    }
 }
 
 impl Debug for Point {
@@ -29,24 +47,15 @@ impl Debug for Point {
 struct Bounds {
     left: u32,
     right: u32,
-    down: u32,
-    up: u32,
+    bottom: u32,
+    top: u32,
 }
 
 impl Bounds {
-    fn bigger(&self, increment: u32) -> Bounds {
-        Bounds {
-            left: self.left + increment,
-            right: self.right + increment,
-            down: self.down + increment,
-            up: self.up + increment,
-        }
-    }
-
     fn empty_points(&self, points: &HashSet<Point>) -> HashSet<Point> {
         let mut empty_points: HashSet<Point> = HashSet::new();
         for col in self.left..=self.right {
-            for row in self.up..=self.down {
+            for row in self.top..=self.bottom {
                 let eval_point = Point::new(col, row);
                 if !points.contains(&eval_point) {
                     empty_points.insert(eval_point);
@@ -68,7 +77,7 @@ enum InputGetterError {
 struct InputGetter {}
 impl InputGetter {
     fn get_input(&self) -> Result<HashSet<Point>, InputGetterError> {
-        include_str!("../inputs/day08.txt")
+        include_str!("../inputs/day06.txt")
             .lines()
             .filter(|x| !x.starts_with("//"))
             .map(|x| {
@@ -83,6 +92,7 @@ impl InputGetter {
                         .map_err(|_| InputGetterError::FailedToParseu32)?;
                     let row = parts
                         .1
+                        .trim()
                         .parse::<u32>()
                         .map_err(|_| InputGetterError::FailedToParseu32)?;
 
@@ -104,8 +114,8 @@ impl PointHandling for HashSet<Point> {
     fn get_bounds(&self) -> Bounds {
         let mut left: Option<u32> = None;
         let mut right: Option<u32> = None;
-        let mut up: Option<u32> = None;
-        let mut down: Option<u32> = None;
+        let mut top: Option<u32> = None;
+        let mut bottom: Option<u32> = None;
 
         for point in self {
             if left.is_none() || point.col < left.unwrap() {
@@ -114,19 +124,19 @@ impl PointHandling for HashSet<Point> {
             if right.is_none() || point.col > right.unwrap() {
                 right = Some(point.col);
             }
-            if up.is_none() || point.row < up.unwrap() {
-                up = Some(point.row);
+            if top.is_none() || point.row < top.unwrap() {
+                top = Some(point.row);
             }
-            if down.is_none() || point.row > down.unwrap() {
-                down = Some(point.row);
+            if bottom.is_none() || point.row > bottom.unwrap() {
+                bottom = Some(point.row);
             }
         }
 
         Bounds {
             left: left.unwrap(),
             right: right.unwrap(),
-            up: up.unwrap(),
-            down: down.unwrap(),
+            top: top.unwrap(),
+            bottom: bottom.unwrap(),
         }
     }
 
@@ -171,40 +181,26 @@ impl PointHandling for HashSet<Point> {
     }
 }
 
+#[allow(dead_code)]
 pub fn part_one() {
     let ig = InputGetter::default();
     let points_res = ig.get_input();
-    println!("points result: {:?}", points_res);
+    // println!("points result: {:?}", points_res);
 
     if let Some(points) = points_res.as_ref().ok() {
         let bounds = points.get_bounds();
         let empty_points = bounds.empty_points(&points);
         let regular_map = empty_points.distance_map(points);
-        println!("regular map: {:?}", regular_map);
-
-        let big_bounds = bounds.bigger(1);
-        let big_empty_points = big_bounds.empty_points(points);
-        let big_map = big_empty_points.distance_map(points);
-        println!("big map: {:?}", big_map);
-
-        // filters out points which had their nearest empty points increase in count (indicating infinite space)
         let filtered_map: HashMap<Point, HashSet<Point>> = regular_map
             .into_iter()
-            .filter(|(rkey, rpoints)| {
-                if let Some(bpoints) = big_map.get(rkey) {
-                    rpoints.len() == bpoints.len()
-                } else {
-                    false
-                }
-            })
+            .filter(|(point, empty_points)| !point.is_boundless(&empty_points, &bounds))
+            .collect();
+        let total_map: HashMap<Point, usize> = filtered_map
+            .into_iter()
+            .map(|(x, y)| (x, y.len() + 1))
             .collect();
 
-        println!(
-            "{:?}",
-            filtered_map
-                .iter()
-                .max_by(|(_, apoints), (_, bpoints)| apoints.len().cmp(&bpoints.len()))
-        );
+        println!("{:#?}", total_map);
     } else {
         println!("points had an error: {:?}", points_res);
     }

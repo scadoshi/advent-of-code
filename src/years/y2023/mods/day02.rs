@@ -63,7 +63,7 @@ fn limits() -> HashMap<String, i32> {
 }
 
 fn input() -> Vec<Game> {
-    include_str!("..//inputs//day02.txt")
+    include_str!("../inputs/day02.txt")
         .lines()
         .map(|line| Game::new(line))
         .collect()

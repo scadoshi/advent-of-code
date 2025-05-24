@@ -24,7 +24,7 @@ fn delta_vector_is_safe(delta_vector: Vec<i32>) -> bool {
 
 #[allow(dead_code)]
 fn get_reports_from_input() -> Vec<Vec<i32>> {
-    include_str!("..//inputs//day02.txt")
+    include_str!("../inputs/day02.txt")
         .lines()
         .map(|line| {
             line.split_whitespace()

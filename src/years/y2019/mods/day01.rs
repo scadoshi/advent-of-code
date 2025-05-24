@@ -18,7 +18,7 @@ fn recur_fuel_for(mass: isize, total: isize) -> isize {
 pub fn part_one() {
     println!(
         "{}",
-        include_str!("..//inputs//day01.txt")
+        include_str!("../inputs/day01.txt")
         .lines()
         .map(|x| fuel_for(x.parse::<isize>().unwrap(), false))
         .sum::<isize>()
@@ -29,7 +29,7 @@ pub fn part_one() {
 pub fn part_two() {
     println!(
         "{}",
-        include_str!("..//inputs//day01.txt")
+        include_str!("../inputs/day01.txt")
             .lines()
             .map(|x| fuel_for(x.parse::<isize>().unwrap(), true))
             .sum::<isize>()

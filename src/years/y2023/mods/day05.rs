@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::Write;
 
 fn seeds() -> Vec<usize> {
-    include_str!("..//inputs//day05.txt")
+    include_str!("../inputs/day05.txt")
         .lines()
         .next()
         .expect("Cannot find first line")
@@ -17,7 +17,7 @@ fn seeds() -> Vec<usize> {
 }
 
 fn seed_ranges() -> Vec<Range> {
-    include_str!("..//inputs//day05.txt")
+    include_str!("../inputs/day05.txt")
         .lines()
         .next()
         .expect("Cannot find first line")

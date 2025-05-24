@@ -136,7 +136,7 @@ pub fn part_one() {
     let mut lights = Lights::new();
 
     for instruction in Instructions::new(
-        include_str!("..//inputs//day06.txt"),
+        include_str!("../inputs/day06.txt"),
     )
     .list
     {

@@ -2,7 +2,7 @@
 pub fn part_one() {
     println!(
         "{}",
-        include_str!("..//inputs//day04.txt")
+        include_str!("../inputs/day04.txt")
             .lines()
             .fold(0, |mut total, line| {
 
@@ -27,7 +27,7 @@ pub fn part_one() {
 pub fn part_two() {
     println!(
         "{}",
-        include_str!("..//inputs//day04.txt")
+        include_str!("../inputs/day04.txt")
             .lines()
             .fold(0, |mut total, line| {
 

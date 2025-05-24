@@ -136,7 +136,7 @@ fn get_signal(
 #[allow(dead_code)]
 pub fn part_one() {
     let instructions = Instructions::new(
-        include_str!("..//inputs//day07.txt"),
+        include_str!("../inputs/day07.txt"),
     );
 
     let mut cache: HashMap<String, i32> = HashMap::new();

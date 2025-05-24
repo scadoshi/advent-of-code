@@ -5,7 +5,7 @@ pub fn part_one() {
 
     let mut code: Vec<i32> = Vec::new();
 
-    for line in include_str!("..//inputs//day02.txt")
+    for line in include_str!("../inputs/day02.txt")
         .lines()
         .map(|x| x.chars().collect::<Vec<char>>())
         .collect::<Vec<Vec<char>>>()

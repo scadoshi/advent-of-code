@@ -13,7 +13,7 @@ impl ToBool for char {
 
 #[allow(dead_code)]
 fn input() -> Vec<i32> {
-    include_str!("..//inputs//day05.txt")
+    include_str!("../inputs/day05.txt")
         .split(',')
         .map(|x| x.parse().unwrap())
         .collect()

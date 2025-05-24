@@ -3,7 +3,7 @@ use std::collections::{HashMap, VecDeque};
 
 #[allow(dead_code)]
 fn krates() -> HashMap<usize, VecDeque<String>> {
-    include_str!("..//inputs//day05.txt")
+    include_str!("../inputs/day05.txt")
         .lines()
         .into_iter()
         .take(9)
@@ -59,7 +59,7 @@ fn top_krates(krates: &HashMap<usize, VecDeque<String>>) -> String {
 
 #[allow(dead_code)]
 fn instructions() -> Vec<Instr> {
-    include_str!("..//inputs//day05.txt")
+    include_str!("../inputs/day05.txt")
         .lines()
         .skip(10)
         .map(|x| {

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 fn rooms() -> Vec<(String, i32, String)> {
-    include_str!("..//inputs//day04.txt")
+    include_str!("../inputs/day04.txt")
         .lines()
         .fold(Vec::new(), |mut rooms, line| {
             let encrypted_name = line[..line.len() - 11].to_string();

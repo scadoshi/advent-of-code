@@ -2,7 +2,7 @@ use md5;
 
 #[allow(dead_code)]
 pub fn part_one() {
-    let input: &str = include_str!("..//inputs//day04.txt");
+    let input: &str = include_str!("../inputs/day04.txt");
     let mut appended = 0;
 
     while format!(

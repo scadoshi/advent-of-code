@@ -4,7 +4,7 @@ fn is_triangle(a: i32, b: i32, c: i32) -> bool {
 
 pub fn part_one() {
     let valid_triangles =
-        include_str!("..//inputs//day03.txt")
+        include_str!("../inputs/day03.txt")
             .lines()
             .fold(0, |mut valid_triangles, line| {
                 let [a, b, c] = line
@@ -23,7 +23,7 @@ pub fn part_one() {
 }
 
 pub fn part_two() {
-    let valid_triangles = include_str!("..//inputs//day03.txt")
+    let valid_triangles = include_str!("../inputs/day03.txt")
         .lines()
         .map(|line| {
             line.split_whitespace()

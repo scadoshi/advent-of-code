@@ -26,7 +26,7 @@ fn react(chars: &Vec<char>) -> Vec<char> {
 }
 
 fn chars() -> Vec<char> {
-    include_str!("..//inputs//day05.txt").chars().collect()
+    include_str!("../inputs/day05.txt").chars().collect()
 }
 
 #[allow(dead_code)]

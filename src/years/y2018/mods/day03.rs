@@ -40,7 +40,7 @@ impl Square {
 
 #[allow(dead_code)]
 fn input() -> Vec<Square> {
-    include_str!("..//inputs//day03.txt")
+    include_str!("../inputs/day03.txt")
         .lines()
         .map(|line| line.to_string())
         .map(|x| Square::new(x))
