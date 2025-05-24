@@ -13,7 +13,7 @@ impl BoardingPass {
 
     #[allow(dead_code)]
     fn input() -> Vec<BoardingPass> {
-        let mut boarding_passes =include_str!("..\\inputs\\day05.txt").lines().fold(
+        let mut boarding_passes =include_str!("..//inputs//day05.txt").lines().fold(
             Vec::new(),
             |mut boarding_passes: Vec<BoardingPass>, line| {
                 let row_instr: Vec<char> = line.chars().take(7).collect();

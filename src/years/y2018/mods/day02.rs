@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[allow(dead_code)]
 fn input() -> Vec<String> {
-    include_str!("..\\inputs\\day02.txt").lines()
+    include_str!("..//inputs//day02.txt").lines()
     .map(|line| line.parse().unwrap())
     .collect()
 }

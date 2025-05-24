@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[allow(dead_code)]
 fn rules() -> HashMap<i32, Vec<i32>> {
-    include_str!("..\\inputs\\day05.txt")
+    include_str!("..//inputs//day05.txt")
         .lines()
         .filter(|line| line.contains('|'))
         .fold(HashMap::new(), |mut map: HashMap<i32, Vec<i32>>, line| {
@@ -20,7 +20,7 @@ fn rules() -> HashMap<i32, Vec<i32>> {
 
 #[allow(dead_code)]
 fn seqs() -> Vec<Vec<i32>> {
-    include_str!("..\\inputs\\day05.txt")
+    include_str!("..//inputs//day05.txt")
         .lines()
         .filter_map(|line| {
             if line.contains(',') {

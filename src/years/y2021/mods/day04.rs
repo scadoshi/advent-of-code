@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 fn nums() -> Vec<u32> {
-    include_str!("..\\inputs\\day04.txt")
+    include_str!("..//inputs//day04.txt")
         .lines()
         .next()
         .unwrap()
@@ -14,7 +14,7 @@ fn boards() -> Vec<Vec<Vec<(u32, bool)>>> {
     let mut boards: Vec<Vec<Vec<(u32, bool)>>> = Vec::new();
     let mut board: Vec<Vec<(u32, bool)>> = Vec::new();
 
-    for line in include_str!("..\\inputs\\day04.txt").lines().skip(2) {
+    for line in include_str!("..//inputs//day04.txt").lines().skip(2) {
         if line.trim().is_empty() {
             boards.push(board.clone());
             board.clear();

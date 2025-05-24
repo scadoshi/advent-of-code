@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 #[allow(dead_code)]
 fn wires() -> Vec<Vec<String>> {
-    include_str!("..\\inputs\\day03.txt")
+    include_str!("..//inputs//day03.txt")
         .lines()
         .map(|x| x.split(",").map(|y| y.to_string()).collect())
         .collect()

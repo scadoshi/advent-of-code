@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 fn input() -> Vec<i32> {
-    include_str!("..\\inputs\\day01.txt")
+    include_str!("..//inputs//day01.txt")
             .lines()
             .map(|x| x.parse().unwrap())
             .collect()

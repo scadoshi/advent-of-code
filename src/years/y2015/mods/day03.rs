@@ -5,7 +5,7 @@ pub fn part_one() {
     let mut visited: HashSet<(i32, i32)> = HashSet::from([(0, 0)]);
     let (mut x, mut y): (i32, i32) = (0, 0);
 
-    include_str!("..\\inputs\\day03.txt")
+    include_str!("..//inputs//day03.txt")
         .chars()
         .for_each(|direction| {
             if direction == '^' {

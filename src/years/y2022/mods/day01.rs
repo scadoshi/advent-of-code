@@ -1,7 +1,7 @@
 pub fn part_one() {
     println!(
         "{:#?}",
-        include_str!("..\\inputs\\day01.txt")
+        include_str!("..//inputs//day01.txt")
         .lines()
         .map(|x| x.parse().unwrap_or(0))
         .collect::<Vec<i32>>()
@@ -15,7 +15,7 @@ pub fn part_one() {
     )
 }
 pub fn part_two() {
-    let mut elves = include_str!("..\\inputs\\day01.txt")
+    let mut elves = include_str!("..//inputs//day01.txt")
         .lines()
         .map(|x| x.parse().unwrap_or(0))
         .collect::<Vec<i32>>()

@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 fn memory_bank() -> Vec<i32> {
-    include_str!("..\\inputs\\day06.txt")
+    include_str!("..//inputs//day06.txt")
         .split_whitespace()
         .map(|x| x.parse().expect("Failed to parse to u8"))
         .collect()

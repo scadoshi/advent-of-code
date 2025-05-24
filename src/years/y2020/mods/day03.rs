@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 fn input() -> Vec<Vec<char>> {
-    include_str!("..\\inputs\\day03.txt")
+    include_str!("..//inputs//day03.txt")
         .lines()
         .map(|line| line.chars().collect())
         .collect()

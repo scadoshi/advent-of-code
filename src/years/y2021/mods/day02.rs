@@ -2,7 +2,7 @@
 pub fn part_one() {
     println!(
         "{:?}",
-        include_str!("..\\inputs\\day02.txt")
+        include_str!("..//inputs//day02.txt")
             .lines()
             .fold([0, 0], |[mut horizontal, mut depth], line| {
                 let distance = line.split_whitespace().nth(1).unwrap().parse::<i32>().unwrap();
@@ -25,7 +25,7 @@ pub fn part_one() {
 pub fn part_two() {
     println!(
         "{:?}",
-        include_str!("..\\inputs\\day02.txt")
+        include_str!("..//inputs//day02.txt")
             .lines()
             .fold([0, 0, 0], |[mut horizontal, mut depth, mut aim], line| {
                 let distance = line.split_whitespace().nth(1).unwrap().parse::<i32>().unwrap();

@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::Write;
 
 fn seeds() -> Vec<usize> {
-    include_str!("..\\inputs\\day05.txt")
+    include_str!("..//inputs//day05.txt")
         .lines()
         .next()
         .expect("Cannot find first line")
@@ -17,7 +17,7 @@ fn seeds() -> Vec<usize> {
 }
 
 fn seed_ranges() -> Vec<Range> {
-    include_str!("..\\inputs\\day05.txt")
+    include_str!("..//inputs//day05.txt")
         .lines()
         .next()
         .expect("Cannot find first line")
@@ -33,7 +33,7 @@ fn seed_ranges() -> Vec<Range> {
 }
 
 fn all_range_map_lists() -> Vec<Vec<RangeMap>> {
-    let maps: Vec<Vec<RangeMap>> = include_str!("..\\inputs\\day05.txt")
+    let maps: Vec<Vec<RangeMap>> = include_str!("..//inputs//day05.txt")
         .split("\r\n\r\n")
         .skip(1)
         .map(|x| {

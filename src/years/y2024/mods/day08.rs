@@ -10,7 +10,7 @@ struct Grid {
 impl Grid {
     #[allow(dead_code)]
     fn new() -> Self {
-        let tiles: Vec<Vec<char>> = include_str!("..\\inputs\\day08.txt")
+        let tiles: Vec<Vec<char>> = include_str!("..//inputs//day08.txt")
             .lines()
             .map(|line| line.chars().collect())
             .collect();

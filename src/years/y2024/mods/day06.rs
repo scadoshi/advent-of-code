@@ -57,7 +57,7 @@ impl Grid {
     fn new() -> Self {
         // Read the input file and convert each line into a vector of characters
         // Each line becomes a row, and each character becomes a column element
-        let tiles: Vec<Vec<char>> = include_str!("..\\inputs\\day06.txt")
+        let tiles: Vec<Vec<char>> = include_str!("..//inputs//day06.txt")
             .lines()
             .map(|line| line.chars().collect())
             .collect();

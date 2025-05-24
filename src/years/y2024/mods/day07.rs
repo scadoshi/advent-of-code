@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 fn input() -> Vec<(Vec<i64>, i64)> {
-    include_str!("..\\inputs\\day07.txt")
+    include_str!("..//inputs//day07.txt")
         .lines()
         .fold(Vec::new(), |mut equations, line| {
             let mut parts = line.split(':');

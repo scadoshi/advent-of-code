@@ -11,7 +11,7 @@ const ALL_MOVES: [(i32, i32); 8] = [
 
 #[allow(dead_code)]
 fn input() -> Vec<Vec<char>> {
-    include_str!("..\\inputs\\day04.txt")
+    include_str!("..//inputs//day04.txt")
         .lines()
         .map(|line| line.chars().collect())
         .collect()

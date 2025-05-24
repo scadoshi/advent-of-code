@@ -10,7 +10,7 @@ lazy_static! {
 
 #[allow(dead_code)]
 fn input() -> Vec<char> {
-    include_str!("..\\inputs\\day03.txt")
+    include_str!("..//inputs//day03.txt")
         .chars()
         .collect::<Vec<char>>()
 }

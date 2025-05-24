@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 pub fn part_one() {
-    let range: Vec<i32> = include_str!("..\\inputs\\day04.txt")
+    let range: Vec<i32> = include_str!("..//inputs//day04.txt")
         .split('-')
         .map(|x| x.parse().unwrap())
         .collect();
@@ -58,7 +58,7 @@ impl StrExt for String {
 
 #[allow(dead_code)]
 pub fn part_two() {
-    let range: Vec<i32> = include_str!("..\\inputs\\day04.txt")
+    let range: Vec<i32> = include_str!("..//inputs//day04.txt")
         .split('-')
         .map(|x| x.parse().unwrap())
         .collect();

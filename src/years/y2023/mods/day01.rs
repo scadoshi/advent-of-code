@@ -4,7 +4,7 @@ use std::collections::HashMap;
 pub fn part_one() {
     println!(
         "{:?}",
-        include_str!("..\\inputs\\day01.txt")
+        include_str!("..//inputs//day01.txt")
         .lines()
         .map(|line| {
                 let left = line
@@ -64,7 +64,7 @@ fn find_right(x: &str) -> Option<i32> {
 pub fn part_two() {
     println!(
         "{:?}",
-        include_str!("..\\inputs\\day01.txt")
+        include_str!("..//inputs//day01.txt")
         .lines()
         .map(|line| {
                 let left = find_left(line)

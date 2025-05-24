@@ -1,5 +1,5 @@
 fn nums() -> Vec<u32> {
-    include_str!("..\\inputs\\day01.txt")
+    include_str!("..//inputs//day01.txt")
         .chars()
         .map(|num_str| {
             num_str

@@ -8,7 +8,7 @@ struct Input {
 
 impl Input {
     fn new() -> Self {
-        let input = include_str!("..\\inputs\\day01.txt");
+        let input = include_str!("..//inputs//day01.txt");
 
         let (mut left_list, mut right_list): (Vec<i32>, Vec<i32>) = input
             .lines()

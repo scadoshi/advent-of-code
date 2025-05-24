@@ -40,7 +40,7 @@ impl Event {
 
 #[allow(dead_code)]
 fn input() -> Vec<Event> {
-    let mut eventlog: Vec<Event> = include_str!("..\\inputs\\day04.txt")
+    let mut eventlog: Vec<Event> = include_str!("..//inputs//day04.txt")
         .lines()
         .map(|line| {
             // guard_id
