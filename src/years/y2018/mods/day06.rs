@@ -1,13 +1,22 @@
+use std::cmp::Ordering::{Equal, Greater, Less};
+use std::rc::Rc;
+use NearestPositionType as NPT;
+
 #[derive(Debug)]
+#[allow(dead_code)]
 struct Grid {
-    _points: Box<[Point]>,
-    _bounds: Bounds,
+    positions: Box<[Rc<Point>]>,
+    empty_space: Box<[Point]>,
+    bounds: Bounds,
 }
 
 trait FindBounds {
     fn find_bounds(&self) -> Bounds;
 }
-impl FindBounds for Box<[Point]> {
+impl<T> FindBounds for Box<[T]>
+where
+    T: AsRef<Point>,
+{
     fn find_bounds(&self) -> Bounds {
         let mut left: Option<usize> = None;
         let mut right: Option<usize> = None;
@@ -15,17 +24,19 @@ impl FindBounds for Box<[Point]> {
         let mut bottom: Option<usize> = None;
 
         for point in self.iter() {
-            if left.is_none() || left.unwrap() > point.col {
-                left = Some(point.col);
+            let (col, row) = (point.as_ref().col, point.as_ref().row);
+
+            if left.is_none() || left.unwrap() > col {
+                left = Some(col);
             }
-            if right.is_none() || right.unwrap() < point.col {
-                right = Some(point.col);
+            if right.is_none() || right.unwrap() < col {
+                right = Some(col);
             }
-            if top.is_none() || top.unwrap() > point.row {
-                top = Some(point.row);
+            if top.is_none() || top.unwrap() > row {
+                top = Some(row);
             }
-            if bottom.is_none() || bottom.unwrap() < point.col {
-                bottom = Some(point.row);
+            if bottom.is_none() || bottom.unwrap() < col {
+                bottom = Some(row);
             }
         }
 
@@ -71,12 +82,10 @@ enum PointType {
 
 #[derive(Debug, Default, PartialEq, Eq, Clone)]
 enum NearestPositionType {
-    Position(Box<Point>),
+    Position(Rc<Point>),
     #[default]
     NotApplicable,
 }
-
-use NearestPositionType as NPT;
 
 impl Point {
     #[allow(dead_code)]
@@ -90,40 +99,49 @@ impl Point {
             || [bounds.top, bounds.bottom].contains(&self.row)
     }
 
-    fn find_nearest_position(&self, positions: &[Point], bounds: &Bounds) -> NPT {
-        positions
-            .iter()
-            .fold(NPT::NotApplicable, |nearest, position| {
-                let current_distance = position.distance_to(self);
+    fn find_nearest_position(&self, positions: &[Rc<Point>]) -> NPT {
+        let mut nearest: NPT = NPT::NotApplicable;
+        let mut first = true;
 
-                match &nearest {
-                    NPT::Position(prev_position) => {
-                        let prev_distance = prev_position.distance_to(self);
+        for position in positions.iter() {
+            let current_distance = position.distance_to(self);
 
-                        use std::cmp::Ordering::{Equal, Greater, Less};
+            if first {
+                nearest = NPT::Position(Rc::clone(position));
+                first = false;
+            } else {
+                if let NPT::Position(prev_position) = &nearest {
+                    let prev_distance = prev_position.distance_to(self);
 
-                        match current_distance.cmp(&prev_distance) {
-                            Less => NPT::Position(Box::new(position.clone())),
-                            Equal => NPT::NotApplicable,
-                            Greater => nearest,
+                    match current_distance.cmp(&prev_distance) {
+                        Less => {
+                            nearest = NPT::Position(Rc::clone(position));
                         }
+                        Equal => {
+                            nearest = NPT::NotApplicable;
+                            break;
+                        }
+                        Greater => (),
                     }
-                    NPT::NotApplicable => NPT::Position(Box::new(Point {
-                        col: position.col,
-                        row: position.row,
-                        point_type: PointType::Position,
-                        nearest_position: NPT::NotApplicable,
-                        is_edging: position.is_edging(&bounds),
-                    })),
                 }
-            })
+            }
+        }
+        nearest
+    }
+}
+
+impl AsRef<Point> for Point {
+    fn as_ref(&self) -> &Point {
+        self
     }
 }
 
 impl Grid {
     fn from_input() -> Self {
         // get positions from input text
-        let positions: Box<[Point]> = include_str!("../inputs/day06.txt")
+        // only include col and row
+        // for bounds finding
+        let basic_positions: Box<[Point]> = include_str!("../inputs/day06.txt")
             .lines()
             .filter(|l| !l.starts_with("//"))
             .map(|l| {
@@ -141,6 +159,8 @@ impl Grid {
                     .parse::<usize>()
                     .expect("failed to parse row to usize");
 
+                // we don't care to fill out other fields at this point
+                // as we just want a list of (col, row) to work with later
                 Point {
                     col,
                     row,
@@ -149,51 +169,57 @@ impl Grid {
             })
             .collect::<Box<[Point]>>();
 
-        // calculate bounds from input positions
-        let bounds = positions.find_bounds();
+        // find bounds
+        let bounds = basic_positions.find_bounds();
 
-        // generate all points and accompanying attributes
-        let all_points: Box<[Point]> = (bounds.left..=bounds.right)
-            .into_iter()
+        // with bounds we can generate the list of
+        // positions with all attributes (i.e. is_edging)
+        let positions: Box<[Rc<Point>]> = basic_positions
+            .iter()
+            .map(|position| {
+                Rc::new(Point {
+                    col: position.col,
+                    row: position.row,
+                    point_type: PointType::Position,
+                    nearest_position: NPT::NotApplicable,
+                    is_edging: position.is_edging(&bounds),
+                })
+            })
+            .collect();
+
+        let empty_space: Box<[Point]> = (bounds.left..=bounds.right)
             .flat_map(|col| {
                 (bounds.top..=bounds.bottom)
-                    .into_iter()
-                    .map(|row| {
-                        let current_point = Point {
+                    .filter_map(|row| {
+                        if positions
+                            .iter()
+                            .any(|position| position.col == col && position.row == row)
+                        {
+                            return None;
+                        }
+
+                        let basic_point = Point {
                             col,
                             row,
                             ..Default::default()
                         };
 
-                        let is_edging = current_point.is_edging(&bounds);
-
-                        let point_type = match positions.contains(&current_point) {
-                            true => PointType::Position,
-                            false => PointType::EmptySpace,
-                        };
-
-                        let nearest_position = match point_type {
-                            PointType::Position => NPT::NotApplicable,
-                            PointType::EmptySpace => {
-                                current_point.find_nearest_position(&positions, &bounds)
-                            }
-                        };
-
-                        Point {
+                        Some(Point {
                             col,
                             row,
-                            point_type,
-                            is_edging,
-                            nearest_position,
-                        }
+                            point_type: PointType::EmptySpace,
+                            nearest_position: basic_point.find_nearest_position(&positions),
+                            is_edging: basic_point.is_edging(&bounds),
+                        })
                     })
-                    .collect::<Vec<Point>>()
+                    .collect::<Box<[Point]>>()
             })
             .collect();
 
         Self {
-            _points: all_points,
-            _bounds: bounds,
+            positions,
+            empty_space,
+            bounds,
         }
     }
 }
@@ -201,7 +227,22 @@ impl Grid {
 #[allow(dead_code)]
 pub fn part_one() {
     let grid = Grid::from_input();
-    println!("{:#?}", grid);
+
+    let most = grid.positions.iter().fold(0, |most: usize, position| {
+        let current = grid
+            .empty_space
+            .iter()
+            .filter(|p| p.nearest_position == NPT::Position(position.clone()))
+            .count();
+
+        if current > most {
+            current
+        } else {
+            most
+        }
+    });
+
+    println!("{}", most);
 }
 
 #[allow(dead_code)]
@@ -212,22 +253,20 @@ pub fn part_two() {}
 mod test {
     use super::*;
 
-    #[ignore]
+    #[test]
     fn fnp_one() {
-        let positions: Box<[Point]> = Box::new([
-            Point {
+        let positions: Box<[Rc<Point>]> = Box::new([
+            Rc::new(Point {
                 col: 3,
                 row: 4,
                 ..Default::default()
-            },
-            Point {
+            }),
+            Rc::new(Point {
                 col: 6,
                 row: 7,
                 ..Default::default()
-            },
+            }),
         ]);
-
-        let bounds = positions.find_bounds();
 
         let point = Point {
             col: 1,
@@ -235,9 +274,9 @@ mod test {
             ..Default::default()
         };
 
-        let result = point.find_nearest_position(&positions, &bounds);
+        let result = point.find_nearest_position(&positions);
 
-        let expected = NPT::Position(Box::new(Point {
+        let expected = NPT::Position(Rc::new(Point {
             col: 3,
             row: 4,
             ..Default::default()
@@ -246,22 +285,25 @@ mod test {
         assert_eq!(result, expected)
     }
 
-    #[ignore]
+    #[test]
     fn fnp_two() {
-        let positions: Box<[Point]> = Box::new([
-            Point {
+        let positions: Box<[Rc<Point>]> = Box::new([
+            Rc::new(Point {
                 col: 3,
                 row: 4,
                 ..Default::default()
-            },
-            Point {
+            }),
+            Rc::new(Point {
                 col: 1,
                 row: 6,
                 ..Default::default()
-            },
+            }),
+            Rc::new(Point {
+                col: 5,
+                row: 5,
+                ..Default::default()
+            }),
         ]);
-
-        let bounds = positions.find_bounds();
 
         let point = Point {
             col: 1,
@@ -269,14 +311,14 @@ mod test {
             ..Default::default()
         };
 
-        let result = point.find_nearest_position(&positions, &bounds);
+        let result = point.find_nearest_position(&positions);
 
         let expected = NPT::NotApplicable;
 
         assert_eq!(result, expected)
     }
 
-    #[ignore]
+    #[test]
     fn dt_simple() {
         let one_point = Point {
             col: 1,
@@ -293,7 +335,7 @@ mod test {
         assert_eq!(result, expected)
     }
 
-    #[ignore]
+    #[test]
     fn dt_standard() {
         let one_point = Point {
             col: 0,
