@@ -1,6 +1,6 @@
 use std::cmp::Ordering::{Equal, Greater, Less};
 
-#[derive(Debug, Default, PartialEq, Eq, Clone)]
+#[derive(Debug, Default, PartialEq, Clone)]
 struct Point {
     col: usize,
     row: usize,
@@ -15,7 +15,6 @@ struct Bounds {
 }
 
 impl Point {
-    #[allow(dead_code)]
     fn distance_to(&self, other_point: &Point) -> usize {
         (self.col as isize - other_point.col as isize).abs() as usize
             + (self.row as isize - other_point.row as isize).abs() as usize
@@ -69,6 +68,31 @@ impl Point {
         }
 
         false
+    }
+
+    fn empty_space(&self, positions: &Vec<Point>) -> Option<usize> {
+        if self.is_boundless(positions) {
+            return None;
+        }
+
+        let bounds = positions.bounds();
+        let mut total = 1;
+
+        for col in bounds.left..=bounds.right {
+            for row in bounds.top..=bounds.bottom {
+                let point = Point { col, row };
+
+                if positions.contains(&point) {
+                    continue;
+                }
+
+                if point.find_nearest_position(positions) == Some(self) {
+                    total += 1;
+                }
+            }
+        }
+
+        Some(total)
     }
 }
 
@@ -129,23 +153,11 @@ pub fn part_one() {
 
     let most = positions
         .iter()
-        .filter(|pos| !pos.is_boundless(&positions))
-        .fold(0, |most, pos| {
-            let current = positions
-                .iter()
-                .filter(|empty_space_point| {
-                    if let Some(other_pos) = empty_space_point.find_nearest_position(&positions) {
-                        pos == other_pos
-                    } else {
-                        false
-                    }
-                })
-                .count();
+        .filter_map(|point| point.empty_space(&positions))
+        .max()
+        .expect("max not found");
 
-            (current).max(most)
-        });
-
-    println!("{}", most);
+    println!("{:?}", most);
 }
 
 #[allow(dead_code)]
@@ -157,143 +169,71 @@ mod test {
     use super::*;
 
     #[test]
-    fn near_one() {
-        let positions: Vec<Point> = vec![
-            Point {
-                col: 3,
-                row: 4,
-                ..Default::default()
-            },
-            Point {
-                col: 6,
-                row: 7,
-                ..Default::default()
-            },
-        ];
-
-        let point = Point {
-            col: 1,
-            row: 4,
-            ..Default::default()
-        };
-
+    fn near_point_one() {
+        let positions: Vec<Point> = vec![Point { col: 3, row: 4 }, Point { col: 6, row: 7 }];
+        let point = Point { col: 1, row: 4 };
         let result = point.find_nearest_position(&positions);
-
-        let expected = Some(&Point {
-            col: 3,
-            row: 4,
-            ..Default::default()
-        });
-
+        let expected = Some(&Point { col: 3, row: 4 });
         assert_eq!(result, expected)
     }
 
     #[test]
-    fn near_two() {
+    fn near_point_two() {
         let positions: Vec<Point> = vec![
-            Point {
-                col: 3,
-                row: 4,
-                ..Default::default()
-            },
-            Point {
-                col: 1,
-                row: 6,
-                ..Default::default()
-            },
-            Point {
-                col: 5,
-                row: 5,
-                ..Default::default()
-            },
+            Point { col: 3, row: 4 },
+            Point { col: 1, row: 6 },
+            Point { col: 5, row: 5 },
         ];
-
-        let point = Point {
-            col: 1,
-            row: 4,
-            ..Default::default()
-        };
-
+        let point = Point { col: 1, row: 4 };
         let result = point.find_nearest_position(&positions);
-
         let expected = None;
-
         assert_eq!(result, expected)
     }
 
     #[test]
-    fn dist_simple() {
-        let one_point = Point {
-            col: 1,
-            row: 4,
-            ..Default::default()
-        };
-        let another_point = Point {
-            col: 1,
-            row: 6,
-            ..Default::default()
-        };
+    fn distance_to_simple() {
+        let one_point = Point { col: 1, row: 4 };
+        let another_point = Point { col: 1, row: 6 };
         let result = one_point.distance_to(&another_point);
         let expected: usize = 2;
         assert_eq!(result, expected)
     }
 
     #[test]
-    fn dist_standard() {
-        let one_point = Point {
-            col: 0,
-            row: 0,
-            ..Default::default()
-        };
-        let another_point = Point {
-            col: 4,
-            row: 8,
-            ..Default::default()
-        };
+    fn distance_to_standard() {
+        let one_point = Point { col: 0, row: 0 };
+        let another_point = Point { col: 4, row: 8 };
         let result = one_point.distance_to(&another_point);
         let expected: usize = 12;
         assert_eq!(result, expected)
     }
 
-    #[test]
-    fn bdless_true() {
-        let positions = vec![
+    fn test_input() -> Vec<Point> {
+        vec![
             Point { col: 1, row: 1 },
             Point { col: 1, row: 6 },
             Point { col: 8, row: 3 },
             Point { col: 3, row: 4 },
             Point { col: 5, row: 5 },
             Point { col: 8, row: 9 },
-        ];
+        ]
+    }
 
+    #[test]
+    fn is_boundless_true() {
+        let positions = test_input();
         assert_eq!(positions[0].is_boundless(&positions), true)
     }
 
     #[test]
-    fn bdless_false() {
-        let positions = vec![
-            Point { col: 1, row: 1 },
-            Point { col: 1, row: 6 },
-            Point { col: 8, row: 3 },
-            Point { col: 3, row: 4 },
-            Point { col: 5, row: 5 },
-            Point { col: 8, row: 9 },
-        ];
-
+    fn is_boundless_false() {
+        let positions = test_input();
         assert_eq!(positions[3].is_boundless(&positions), false)
     }
 
     #[test]
     fn bds_input() {
-        let positions = vec![
-            Point { col: 1, row: 1 },
-            Point { col: 1, row: 6 },
-            Point { col: 8, row: 3 },
-            Point { col: 3, row: 4 },
-            Point { col: 5, row: 5 },
-            Point { col: 8, row: 9 },
-        ];
-
+        let positions = test_input();
         let result = positions.bounds();
         let expected = Bounds {
             left: 1,
@@ -302,5 +242,19 @@ mod test {
             bottom: 9,
         };
         assert_eq!(result, expected)
+    }
+
+    #[test]
+    fn edge_true() {
+        let positions = test_input();
+        let result = positions[2].is_edging(&positions.bounds());
+        assert_eq!(result, true)
+    }
+
+    #[test]
+    fn edge_false() {
+        let positions = test_input();
+        let result = positions[4].is_edging(&positions.bounds());
+        assert_eq!(result, false)
     }
 }
