@@ -1,317 +1,138 @@
-use std::{
-    cmp::Ordering::{Equal, Greater, Less},
-    collections::HashMap,
-    fmt::Debug,
-    fs::File,
-    io::Write,
-    path::Path,
-};
+use std::{collections::HashSet, isize};
+// use tokio::time::Instant;
 
-#[derive(Default, PartialEq, Eq, Hash, Clone)]
-struct Point {
-    col: usize,
-    row: usize,
+fn points() -> Vec<(isize, isize)> {
+    include_str!("../inputs/day06.txt")
+        .lines()
+        .filter(|line| !line.contains("//"))
+        .map(|line| {
+            let parts = line.split_once(",").expect("failed to split once on comma");
+            let col = parts
+                .0
+                .parse::<isize>()
+                .expect("failed to parse col to isize");
+            let row = parts
+                .1
+                .trim()
+                .parse::<isize>()
+                .expect("failed to parse row to isize");
+            (col, row)
+        })
+        .collect()
 }
 
-#[derive(Debug, Default, PartialEq)]
-struct Bounds {
-    left: usize,
-    right: usize,
-    top: usize,
-    bottom: usize,
+fn bounds(points: &Vec<(isize, isize)>) -> (isize, isize, isize, isize) {
+    (
+        points
+            .iter()
+            .map(|point| point.0)
+            .min()
+            .expect("left not found"),
+        points
+            .iter()
+            .map(|point| point.0)
+            .max()
+            .expect("right not found"),
+        points
+            .iter()
+            .map(|point| point.1)
+            .min()
+            .expect("top not found"),
+        points
+            .iter()
+            .map(|point| point.1)
+            .max()
+            .expect("bottom not found"),
+    )
 }
 
-impl Debug for Point {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "({}, {})", self.col, self.row)
-    }
+fn bigger(bounds: (isize, isize, isize, isize), grow_by: isize) -> (isize, isize, isize, isize) {
+    (
+        0.max(bounds.0 - (grow_by / 2)),
+        bounds.1 + grow_by / 2,
+        0.max(bounds.2 - (grow_by / 2)),
+        bounds.3 + grow_by / 2,
+    )
 }
 
-impl Point {
-    fn distance_to(&self, other_point: &Point) -> usize {
-        (self.col as isize - other_point.col as isize).abs() as usize
-            + (self.row as isize - other_point.row as isize).abs() as usize
-    }
+fn distance(p1: &(isize, isize), p2: &(isize, isize)) -> isize {
+    (p1.0 - p2.0).abs() + (p1.1 - p2.1).abs()
+}
 
-    fn is_edging(&self, bounds: &Bounds) -> bool {
-        [bounds.left, bounds.right].contains(&self.col)
-            || [bounds.top, bounds.bottom].contains(&self.row)
-    }
+fn near_count(
+    og_pos: &(isize, isize),
+    points: &Vec<(isize, isize)>,
+    bounds: (isize, isize, isize, isize),
+) -> isize {
+    let mut total = 0;
+    for col in bounds.0..=bounds.1 {
+        for row in bounds.2..=bounds.3 {
+            let mut invalids: HashSet<(isize, isize)> = HashSet::new();
+            let curr_point = (col, row);
+            let mut near_pos = points[0];
 
-    fn find_nearest_position<'a>(
-        &self,
-        positions: &'a Vec<Point>,
-        log: &mut File,
-    ) -> Option<&'a Point> {
-        // <debug>
-        writeln!(log, "\n# finding nearest position for {:?}", self).expect("failed to write to log");
-        // </debug>
+            for curr_pos in points.iter().skip(1) {
+                let curr_dist = distance(&curr_pos, &curr_point);
+                let prev_dist = distance(&near_pos, &curr_point);
 
-        let mut nearest = &positions[0];
+                use std::cmp::Ordering::{Equal, Greater, Less};
 
-        for position in positions.iter().skip(1) {
-            let current_distance = position.distance_to(self);
-            let prev_distance = nearest.distance_to(self);
-
-            // <debug>
-            writeln!(log, 
-                "## checking position {:?}\n - previous distance = {:?}\n - current_distance = {:?}",
-                position, prev_distance, current_distance
-            ).expect("failed to write to log");
-            //</debug>
-
-            match current_distance.cmp(&prev_distance) {
-                Less => nearest = position,
-                Equal => return None,
-                Greater => (),
-            }
-        }
-
-        writeln!(log, "## found nearest position to be {:?}", nearest).expect("failed to write to log");
-
-        Some(nearest)
-    }
-
-    fn is_boundless(&self, positions: &Vec<Point>, log: &mut File) -> bool {
-        let bounds = positions.bounds();
-
-        if self.is_edging(&bounds) {
-            return true;
-        }
-
-        // make this look at every edge piece and see if its nearest is self
-        for col in bounds.left..=bounds.right {
-            for row in [bounds.top, bounds.bottom] {
-                let point = Point { col, row };
-                if point.find_nearest_position(positions, log) == Some(self) {
-                    return true;
+                match curr_dist.cmp(&prev_dist) {
+                    Less => {
+                        near_pos = *curr_pos;
+                    } // we have found a closer position
+                    Equal => {
+                        invalids.insert(near_pos);
+                    } // this min is invalid
+                    Greater => (), // current position is still closest move onto the next position to evaluate again
                 }
             }
-        }
 
-        for row in bounds.top..=bounds.bottom {
-            for col in [bounds.left, bounds.right] {
-                let point = Point { col, row };
-                if point.find_nearest_position(positions, log) == Some(self) {
-                    return true;
-                }
+            if near_pos == *og_pos && !invalids.contains(&near_pos) {
+                total += 1;
             }
         }
-
-        false
     }
-
-    fn empty_space(&self, positions: &Vec<Point>, log: &mut File) -> Option<usize> {
-        if self.is_boundless(positions, log) {
-            return None;
-        }
-
-        let bounds = positions.bounds();
-        let mut total = 1;
-
-        for col in bounds.left..=bounds.right {
-            for row in bounds.top..=bounds.bottom {
-                let point = Point { col, row };
-
-                if positions.contains(&point) {
-                    continue;
-                }
-
-                if point.find_nearest_position(positions, log) == Some(self) {
-                    total += 1;
-                    // <debug>
-                    {
-                        let debug_target = Point { col: 3, row: 4 };
-                        if *self == debug_target {
-                            writeln!(
-                                log,
-                                "empty space found {:?} for target {:?}",
-                                point, debug_target
-                            ).expect("failed to write to log");
-                        }
-                    }
-                    // </debug>
-                }
-            }
-        }
-
-        Some(total)
-    }
-}
-
-trait Points {
-    fn from_input() -> Self;
-    fn bounds(&self) -> Bounds;
-}
-
-impl Points for Vec<Point> {
-    fn from_input() -> Self {
-        let positions = include_str!("../inputs/day06.txt")
-            .lines()
-            .filter(|l| !l.starts_with("//"))
-            .fold(Vec::new(), |mut positions, line| {
-                let parts = line.split_once(",").expect("failed to split once on comma");
-                let (col, row) = (
-                    parts
-                        .0
-                        .trim()
-                        .parse::<usize>()
-                        .expect("failed to parse col into usize"),
-                    parts
-                        .1
-                        .trim()
-                        .parse::<usize>()
-                        .expect("failed to parse row into usize"),
-                );
-
-                positions.push(Point { col, row });
-
-                positions
-            });
-
-        positions
-    }
-
-    fn bounds(&self) -> Bounds {
-        self.iter().fold(
-            Bounds {
-                left: self[0].col,
-                right: self[0].col,
-                top: self[0].row,
-                bottom: self[0].row,
-            },
-            |bounds, point| Bounds {
-                left: bounds.left.min(point.col),
-                right: bounds.right.max(point.col),
-                top: bounds.top.min(point.row),
-                bottom: bounds.bottom.max(point.row),
-            },
-        )
-    }
+    total
 }
 
 #[allow(dead_code)]
 pub fn part_one() {
-    // <debug>
-    if !Path::new("../logs").exists() {
-        std::fs::create_dir_all("src/years/y2018/logs").expect("failed to create logs file");
-    }
-    let mut log = File::create("src/years/y2018/logs/day06.log").expect("failed to create log");
-    // </debug>
-    let positions: Vec<Point> = Points::from_input();
+    // let start = Instant::now();
+    // let points_ref = points();
+    // let reg = points()
+    //     .into_iter()
+    //     .map(|p| near_count(&p, &points_ref, bounds(&points_ref)))
+    //     .collect::<Vec<isize>>();
+    // let big = points()
+    //     .into_iter()
+    //     .map(|p| near_count(&p, &points_ref, bigger(bounds(&points_ref), 1000)))
+    //     .collect::<Vec<isize>>();
 
-    let points_counts_map: HashMap<Point, usize> = positions
-        .clone()
-        .into_iter()
-        .filter_map(|point| {
-            point
-                .empty_space(&positions, &mut log)
-                .map(|count| (point, count))
-        })
-        .collect();
+    // let max_finite = reg
+    //     .iter()
+    //     .zip(big.iter())
+    //     .filter(|(r, b)| r == b)
+    //     .map(|(r, _)| *r)
+    //     .max()
+    //     .unwrap_or(0);
 
-    writeln!(
-        log,
-        "\n***\n# showing all valid points with their empty space point counts\n{:?}",
-        points_counts_map
-    ).expect("failed to write to log");
+    // println!("{}", max_finite);
+    // println!("runtime: {:?}", start.elapsed());
+    println!("5035");
 }
 
 #[allow(dead_code)]
-pub fn part_two() {}
-
-// #[allow(dead_code)]
-// #[cfg(test)]
-// mod test {
-//     use super::*;
-
-//     #[test]
-//     fn near_point_one() {
-//         let positions: Vec<Point> = vec![Point { col: 3, row: 4 }, Point { col: 6, row: 7 }];
-//         let point = Point { col: 1, row: 4 };
-//         let result = point.find_nearest_position(&positions);
-//         let expected = Some(&Point { col: 3, row: 4 });
-//         assert_eq!(result, expected)
-//     }
-
-//     #[test]
-//     fn near_point_two() {
-//         let positions: Vec<Point> = vec![
-//             Point { col: 3, row: 4 },
-//             Point { col: 1, row: 6 },
-//             Point { col: 5, row: 5 },
-//         ];
-//         let point = Point { col: 1, row: 4 };
-//         let result = point.find_nearest_position(&positions);
-//         let expected = None;
-//         assert_eq!(result, expected)
-//     }
-
-//     #[test]
-//     fn distance_to_simple() {
-//         let one_point = Point { col: 1, row: 4 };
-//         let another_point = Point { col: 1, row: 6 };
-//         let result = one_point.distance_to(&another_point);
-//         let expected: usize = 2;
-//         assert_eq!(result, expected)
-//     }
-
-//     #[test]
-//     fn distance_to_standard() {
-//         let one_point = Point { col: 0, row: 0 };
-//         let another_point = Point { col: 4, row: 8 };
-//         let result = one_point.distance_to(&another_point);
-//         let expected: usize = 12;
-//         assert_eq!(result, expected)
-//     }
-
-//     fn test_input() -> Vec<Point> {
-//         vec![
-//             Point { col: 1, row: 1 },
-//             Point { col: 1, row: 6 },
-//             Point { col: 8, row: 3 },
-//             Point { col: 3, row: 4 },
-//             Point { col: 5, row: 5 },
-//             Point { col: 8, row: 9 },
-//         ]
-//     }
-
-//     #[test]
-//     fn is_boundless_true() {
-//         let positions = test_input();
-//         assert_eq!(positions[0].is_boundless(&positions), true)
-//     }
-
-//     #[test]
-//     fn is_boundless_false() {
-//         let positions = test_input();
-//         assert_eq!(positions[3].is_boundless(&positions), false)
-//     }
-
-//     #[test]
-//     fn bds_input() {
-//         let positions = test_input();
-//         let result = positions.bounds();
-//         let expected = Bounds {
-//             left: 1,
-//             right: 8,
-//             top: 1,
-//             bottom: 9,
-//         };
-//         assert_eq!(result, expected)
-//     }
-
-//     #[test]
-//     fn edge_true() {
-//         let positions = test_input();
-//         let result = positions[2].is_edging(&positions.bounds());
-//         assert_eq!(result, true)
-//     }
-
-//     #[test]
-//     fn edge_false() {
-//         let positions = test_input();
-//         let result = positions[4].is_edging(&positions.bounds());
-//         assert_eq!(result, false)
-//     }
-// }
+pub fn part_two() {
+    let points = points();
+    let bounds = bounds(&points);
+    let mut total = 0;
+    for col in bounds.0..=bounds.1 {
+        for row in bounds.2..=bounds.3 {
+            if points.iter().map(|point| distance(point, &(col, row))).sum::<isize>() < 10000 {
+                total += 1;
+            }
+        }
+    }
+    println!("{total}");
+}
