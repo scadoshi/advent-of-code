@@ -46,6 +46,7 @@ fn bounds(points: &Vec<(isize, isize)>) -> (isize, isize, isize, isize) {
     )
 }
 
+#[allow(dead_code)]
 fn bigger(bounds: (isize, isize, isize, isize), grow_by: isize) -> (isize, isize, isize, isize) {
     (
         0.max(bounds.0 - (grow_by / 2)),
@@ -59,6 +60,7 @@ fn distance(p1: &(isize, isize), p2: &(isize, isize)) -> isize {
     (p1.0 - p2.0).abs() + (p1.1 - p2.1).abs()
 }
 
+#[allow(dead_code)]
 fn near_count(
     og_pos: &(isize, isize),
     points: &Vec<(isize, isize)>,
