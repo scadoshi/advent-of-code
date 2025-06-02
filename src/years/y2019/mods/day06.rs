@@ -1,5 +1,5 @@
 use std::collections::VecDeque;
-use tokio::time::Instant;
+use std::time::Instant;
 
 #[derive(Debug, Clone, PartialEq)]
 struct Node {
