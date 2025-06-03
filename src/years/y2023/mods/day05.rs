@@ -132,12 +132,12 @@ impl Range {
             }
 
             if let Some(matching_rmap) = arml[group].iter().find(|rmap| {
-                !(range_to_check.last < rmap.source.first || range_to_check.first > rmap.source.last)
+                !(range_to_check.last < rmap.source.first
+                    || range_to_check.first > rmap.source.last)
             }) {
                 for range in range_to_check.split_map(matching_rmap) {
                     if range.first == 0 {
                         writeln!(log, "{:?}", range).expect("Failed to write to log");
-
                     }
                     queue.push_back((range, group + 1));
                 }
@@ -209,8 +209,8 @@ pub fn part_one() {
 
 #[allow(dead_code)]
 pub fn part_two() {
-    let mut log = File::create("src\\years\\y2023\\mods\\day05_log.txt")
-        .expect("Failed to create log");
+    let mut log =
+        File::create("src\\years\\y2023\\mods\\day05_log.txt").expect("Failed to create log");
     let arml = all_range_map_lists();
     let mut lowest_location: Option<usize> = None;
     let seed_ranges = seed_ranges();
@@ -219,7 +219,9 @@ pub fn part_two() {
         let location_ranges = seed_range.to_location_ranges(&arml, &mut log);
 
         for range in location_ranges {
-            if lowest_location.is_none() || (range.first < lowest_location.unwrap() && range.first != 0) {
+            if lowest_location.is_none()
+                || (range.first < lowest_location.unwrap() && range.first != 0)
+            {
                 lowest_location = Some(range.first);
             }
         }

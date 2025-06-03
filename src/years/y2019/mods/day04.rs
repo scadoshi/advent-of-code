@@ -4,18 +4,18 @@ pub fn part_one() {
         .split('-')
         .map(|x| x.parse().unwrap())
         .collect();
-    
+
     let min = range[0];
     let max = range[1];
-    
+
     let mut total = 0;
     'main: for password in min..=max {
         let mut double_digits: bool = false;
         for chars in password
-        .to_string()
-        .chars()
-        .collect::<Vec<char>>()
-        .windows(2)
+            .to_string()
+            .chars()
+            .collect::<Vec<char>>()
+            .windows(2)
         {
             if chars[0] == chars[1] {
                 double_digits = true;
@@ -29,7 +29,7 @@ pub fn part_one() {
         }
         total += 1;
     }
-    
+
     println!("{}", total);
 }
 
@@ -67,7 +67,12 @@ pub fn part_two() {
     let max = range[1];
     let mut total = 0;
     'main: for password in min..=max {
-        for chars in password.to_string().chars().collect::<Vec<char>>().windows(2) {
+        for chars in password
+            .to_string()
+            .chars()
+            .collect::<Vec<char>>()
+            .windows(2)
+        {
             if chars[0] > chars[1] {
                 continue 'main;
             }

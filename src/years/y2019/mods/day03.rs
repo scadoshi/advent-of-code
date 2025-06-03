@@ -77,8 +77,12 @@ pub fn part_two() {
                     'D' => y -= 1,
                     _ => (),
                 }
-                
-                if !wire_map.entry((x, y)).or_default().contains_key(&(i as i32)) {
+
+                if !wire_map
+                    .entry((x, y))
+                    .or_default()
+                    .contains_key(&(i as i32))
+                {
                     wire_map.entry((x, y)).or_default().insert(i as i32, steps);
                 }
             }
@@ -90,9 +94,7 @@ pub fn part_two() {
     let result = wire_map
         .into_iter()
         .filter(|(_, wire_nums)| wire_nums.len() == 2)
-        .map(|(_, x)| {
-            x.values().sum::<i32>()
-        })
+        .map(|(_, x)| x.values().sum::<i32>())
         .min()
         .unwrap();
 

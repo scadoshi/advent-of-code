@@ -27,9 +27,7 @@ fn index_bit_counts(input: &Vec<String>) -> Vec<(i32, i32)> {
     sorted.sort_by(|x, y| x.0.cmp(&y.0));
 
     // extract tuples only
-    let result: Vec<(i32, i32)> = sorted.iter()
-        .map(|line| line.1)
-        .collect();
+    let result: Vec<(i32, i32)> = sorted.iter().map(|line| line.1).collect();
 
     // return result
     result
@@ -37,23 +35,35 @@ fn index_bit_counts(input: &Vec<String>) -> Vec<(i32, i32)> {
 
 #[allow(dead_code)]
 fn max_bit_str(input: &Vec<(i32, i32)>) -> String {
-    input.iter().map(|(zero, one)| {
-        // println!("zero = {}, one = {}", zero, one); // debug
-        if zero > one { '0' }
-        else if one > zero { '1' }
-        else { '1' }
-    })
-    .collect::<String>()
+    input
+        .iter()
+        .map(|(zero, one)| {
+            // println!("zero = {}, one = {}", zero, one); // debug
+            if zero > one {
+                '0'
+            } else if one > zero {
+                '1'
+            } else {
+                '1'
+            }
+        })
+        .collect::<String>()
 }
 
 #[allow(dead_code)]
 fn min_bit_str(input: &Vec<(i32, i32)>) -> String {
-    input.iter().map(|(zero, one)| {
-        if zero > one { '1' }
-        else if one > zero { '0' }
-        else { '0' }
-    })
-    .collect::<String>()
+    input
+        .iter()
+        .map(|(zero, one)| {
+            if zero > one {
+                '1'
+            } else if one > zero {
+                '0'
+            } else {
+                '0'
+            }
+        })
+        .collect::<String>()
 }
 
 #[allow(dead_code)]
@@ -64,7 +74,8 @@ pub fn part_one() {
     let e_rate = min_bit_str(&index_bit_counts);
     println!(
         "{}",
-        u32::from_str_radix(g_rate.as_str(), 2).unwrap() * u32::from_str_radix(e_rate.as_str(), 2).unwrap()
+        u32::from_str_radix(g_rate.as_str(), 2).unwrap()
+            * u32::from_str_radix(e_rate.as_str(), 2).unwrap()
     );
 }
 
@@ -78,12 +89,22 @@ fn function(input: &Vec<String>, toggle: bool) -> String {
     // goes until we only have one left
     while invalid.len() < input.len() - 1 {
         // calculate new input considering removed
-        let input_adj: Vec<String> = input.clone().into_iter().filter(|x| !invalid.contains(x)).collect();
+        let input_adj: Vec<String> = input
+            .clone()
+            .into_iter()
+            .filter(|x| !invalid.contains(x))
+            .collect();
         // calulate new rate
-        let rate = if toggle { max_bit_str(&index_bit_counts(&input_adj)) } else { min_bit_str(&index_bit_counts(&input_adj)) };
+        let rate = if toggle {
+            max_bit_str(&index_bit_counts(&input_adj))
+        } else {
+            min_bit_str(&index_bit_counts(&input_adj))
+        };
         // println!("## rate = {}\n### index {} should equal {}", rate, i, rate.chars().nth(i).unwrap()); // debug
         for line in input.iter() {
-            if line.chars().nth(i).unwrap() != rate.chars().nth(i).unwrap() && !invalid.contains(line) {
+            if line.chars().nth(i).unwrap() != rate.chars().nth(i).unwrap()
+                && !invalid.contains(line)
+            {
                 invalid.push(line.to_string());
                 // println!("- removed {}", line); // debug
             }
@@ -95,7 +116,11 @@ fn function(input: &Vec<String>, toggle: bool) -> String {
         i += 1;
     }
 
-    input.iter().filter(|line| !invalid.contains(line)).collect::<Vec<&String>>()[0].clone()
+    input
+        .iter()
+        .filter(|line| !invalid.contains(line))
+        .collect::<Vec<&String>>()[0]
+        .clone()
 }
 
 #[allow(dead_code)]
@@ -110,6 +135,7 @@ pub fn part_two() {
 
     println!(
         "{}",
-        u32::from_str_radix(og_rate.as_str(), 2).unwrap() * u32::from_str_radix(cs_rate.as_str(), 2).unwrap()
+        u32::from_str_radix(og_rate.as_str(), 2).unwrap()
+            * u32::from_str_radix(cs_rate.as_str(), 2).unwrap()
     );
 }

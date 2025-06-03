@@ -76,7 +76,6 @@ pub fn part_one() {
 
 #[allow(dead_code)]
 pub fn part_two() {
-    
     let input = input();
     let map = map_squares(&input);
 
@@ -88,7 +87,7 @@ pub fn part_two() {
 
         if non_overlapping_count == square.width * square.height {
             println!("{}", square.id);
-            break
+            break;
         }
     }
 }

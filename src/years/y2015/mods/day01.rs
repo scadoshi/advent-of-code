@@ -16,7 +16,11 @@ pub fn part_one() {
             }
             floor_num
         });
-    println!("final floor_num is {:?}\nfirst negative index is {:?}", floor_num, first_neg_i.unwrap());
+    println!(
+        "final floor_num is {:?}\nfirst negative index is {:?}",
+        floor_num,
+        first_neg_i.unwrap()
+    );
 }
 
 pub fn part_two() {}

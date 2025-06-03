@@ -131,7 +131,12 @@ pub fn part_two() {
     let mut total = 0;
     for col in bounds.0..=bounds.1 {
         for row in bounds.2..=bounds.3 {
-            if points.iter().map(|point| distance(point, &(col, row))).sum::<isize>() < 10000 {
+            if points
+                .iter()
+                .map(|point| distance(point, &(col, row)))
+                .sum::<isize>()
+                < 10000
+            {
                 total += 1;
             }
         }

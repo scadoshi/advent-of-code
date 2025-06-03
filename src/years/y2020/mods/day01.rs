@@ -1,9 +1,9 @@
 #[allow(dead_code)]
 fn input() -> Vec<i32> {
     include_str!("../inputs/day01.txt")
-            .lines()
-            .map(|x| x.parse().unwrap())
-            .collect()
+        .lines()
+        .map(|x| x.parse().unwrap())
+        .collect()
 }
 
 #[allow(dead_code)]
@@ -11,9 +11,13 @@ pub fn part_one() {
     let nums = input();
     let target_sum = 2020;
     for (i, num1) in nums.iter().enumerate() {
-        if nums.iter().enumerate().any(|(j, num2)| target_sum - num1 == *num2 && i != j) {
+        if nums
+            .iter()
+            .enumerate()
+            .any(|(j, num2)| target_sum - num1 == *num2 && i != j)
+        {
             println!("{}", num1 * (target_sum - num1));
-            break
+            break;
         }
     }
 }
@@ -29,7 +33,7 @@ pub fn part_two() {
             let sub_sub_target = sub_target - num2;
             if nums.contains(&sub_sub_target) {
                 println!("{}", sub_sub_target * num1 * num2);
-                break 'main
+                break 'main;
             }
         }
     }

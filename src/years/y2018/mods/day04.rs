@@ -128,7 +128,6 @@ pub fn part_one() {
         .fold(
             HashMap::new(),
             |mut minute_map: HashMap<u32, u32>, event| {
-
                 for i in 0..event.minutes {
                     let current_minute =
                         (event.start.unwrap().time() + Duration::minutes(i as i64)).minute();
@@ -153,12 +152,18 @@ pub fn part_two() {
                 for i in 0..event.minutes {
                     let current_minute =
                         (event.start.unwrap().time() + Duration::minutes(i as i64)).minute();
-                    *guard_minute_map.entry((event.guard_id.unwrap(), current_minute)).or_default() += 1;
+                    *guard_minute_map
+                        .entry((event.guard_id.unwrap(), current_minute))
+                        .or_default() += 1;
                 }
                 guard_minute_map
             },
         );
 
-    let (sleepiest_guard, sleepiest_minute) = *guard_minute_map.iter().max_by(|a, b| a.1.cmp(b.1)).unwrap().0;
+    let (sleepiest_guard, sleepiest_minute) = *guard_minute_map
+        .iter()
+        .max_by(|a, b| a.1.cmp(b.1))
+        .unwrap()
+        .0;
     println!("{}", sleepiest_guard * sleepiest_minute);
 }

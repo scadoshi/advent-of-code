@@ -5,7 +5,12 @@ pub fn part_one() {
         include_str!("../inputs/day02.txt")
             .lines()
             .fold([0, 0], |[mut horizontal, mut depth], line| {
-                let distance = line.split_whitespace().nth(1).unwrap().parse::<i32>().unwrap();
+                let distance = line
+                    .split_whitespace()
+                    .nth(1)
+                    .unwrap()
+                    .parse::<i32>()
+                    .unwrap();
                 match line.split_whitespace().next().unwrap() {
                     "forward" => horizontal += distance,
                     "down" => depth += distance,
@@ -25,10 +30,15 @@ pub fn part_one() {
 pub fn part_two() {
     println!(
         "{:?}",
-        include_str!("../inputs/day02.txt")
-            .lines()
-            .fold([0, 0, 0], |[mut horizontal, mut depth, mut aim], line| {
-                let distance = line.split_whitespace().nth(1).unwrap().parse::<i32>().unwrap();
+        include_str!("../inputs/day02.txt").lines().fold(
+            [0, 0, 0],
+            |[mut horizontal, mut depth, mut aim], line| {
+                let distance = line
+                    .split_whitespace()
+                    .nth(1)
+                    .unwrap()
+                    .parse::<i32>()
+                    .unwrap();
                 match line.split_whitespace().next().unwrap() {
                     "forward" => {
                         horizontal += distance;
@@ -44,7 +54,8 @@ pub fn part_two() {
                 }
 
                 [horizontal, depth, aim]
-            })[..2]
+            }
+        )[..2]
             .iter()
             .map(|x| x.abs())
             .product::<i32>()

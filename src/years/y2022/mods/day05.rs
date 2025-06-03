@@ -46,13 +46,18 @@ fn top_krates(krates: &HashMap<usize, VecDeque<String>>) -> String {
         .into_iter()
         .filter_map(|(i, stack)| {
             if let Some(krate) = stack.iter().next() {
-                Some(
-                    (*i, krate.chars().filter(|char| !"[]".contains(*char)).collect::<String>())
-                )
+                Some((
+                    *i,
+                    krate
+                        .chars()
+                        .filter(|char| !"[]".contains(*char))
+                        .collect::<String>(),
+                ))
             } else {
                 None
             }
-        }).collect();
+        })
+        .collect();
     top_krates.sort_by(|a, b| a.0.cmp(&b.0));
     top_krates.into_iter().map(|x| x.1).collect::<String>()
 }
@@ -113,10 +118,14 @@ pub fn part_one() {
 pub fn part_two() {
     let mut krates = krates();
     for instr in instructions() {
-        let krates_to_move: Vec<String> = krates.entry(instr.from).or_default().drain(0..instr.quantity).collect(); 
+        let krates_to_move: Vec<String> = krates
+            .entry(instr.from)
+            .or_default()
+            .drain(0..instr.quantity)
+            .collect();
         for krate in krates_to_move.into_iter().rev() {
             krates.entry(instr.to).or_default().push_front(krate);
-        }        
+        }
     }
     // println!("{:?}", &krates);
     println!("{}", top_krates(&krates));

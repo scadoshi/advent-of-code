@@ -36,11 +36,11 @@ pub fn part_one() {
 }
 pub fn part_two() {
     let keypad: Vec<Vec<char>> = vec![
-        vec!['_', '_', '1', '_' , '_'],
-        vec!['_', '2', '3', '4' , '_'],
-        vec!['5', '6', '7', '8' , '9'],
-        vec!['_', 'A', 'B', 'C' , '_'],
-        vec!['_', '_', 'D', '_' , '_']
+        vec!['_', '_', '1', '_', '_'],
+        vec!['_', '2', '3', '4', '_'],
+        vec!['5', '6', '7', '8', '9'],
+        vec!['_', 'A', 'B', 'C', '_'],
+        vec!['_', '_', 'D', '_', '_'],
     ];
 
     let (mut row, mut col) = (1 as i32, 1 as i32);
@@ -64,7 +64,8 @@ pub fn part_two() {
                 _ => (row, col),
             };
 
-            if row > 4 || col > 4 || row < 0 || col < 0 || keypad[row as usize][col as usize] == '_' {
+            if row > 4 || col > 4 || row < 0 || col < 0 || keypad[row as usize][col as usize] == '_'
+            {
                 (row, col) = last;
             }
 

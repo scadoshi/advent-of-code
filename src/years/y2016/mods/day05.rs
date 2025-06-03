@@ -37,7 +37,6 @@ pub fn part_two() {
                     password[i as usize] = hashed.chars().nth(6).unwrap();
                 }
             }
-        
         }
         appended += 1;
     }

@@ -67,7 +67,10 @@ pub fn part_one() {
 /// * Boolean indicating if sequence is valid
 /// * Option with index of violating number (if invalid)
 /// * Option with index of violated rule (if invalid)
-fn seq_is_valid(seq: &[i32], rules: &HashMap<i32, Vec<i32>>) -> (bool, Option<usize>, Option<usize>) {
+fn seq_is_valid(
+    seq: &[i32],
+    rules: &HashMap<i32, Vec<i32>>,
+) -> (bool, Option<usize>, Option<usize>) {
     // Initialize seen numbers with first element which is always valid by definition
     let mut seen: Vec<i32> = vec![seq[0]];
 
@@ -83,7 +86,7 @@ fn seq_is_valid(seq: &[i32], rules: &HashMap<i32, Vec<i32>>) -> (bool, Option<us
                 return (false, Some(i), Some(violated_i));
             }
         }
-    seen.push(num);
+        seen.push(num);
     }
     (true, None, None)
 }
@@ -96,12 +99,14 @@ pub fn part_two() {
 
     for mut seq in seqs {
         let (mut valid, mut violating_i, mut violated_i) = seq_is_valid(&seq, &rules);
-        if !valid { // only perform logic on the invalid seqs
-            while !valid { // continue to loop until seq is valid
+        if !valid {
+            // only perform logic on the invalid seqs
+            while !valid {
+                // continue to loop until seq is valid
                 seq.swap(violating_i.unwrap(), violated_i.unwrap());
                 (valid, violating_i, violated_i) = seq_is_valid(&seq, &rules)
             }
-            total += seq[seq.len()/2];
+            total += seq[seq.len() / 2];
         }
     }
     println!("{total}");

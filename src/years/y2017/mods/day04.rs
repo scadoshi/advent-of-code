@@ -24,17 +24,16 @@ pub fn part_two() {
             .lines()
             .filter(|line| {
                 let reg: Vec<&str> = line.split_whitespace().collect();
-                let adj: HashSet<String> = HashSet::from_iter(
-                    reg.clone().into_iter()
-                        .map(|word| {
-                            let mut letters: Vec<char> = word.chars()
-                                .collect::<HashSet<char>>()
-                                .into_iter()
-                                .collect::<Vec<char>>();
-                            letters.sort();
-                            letters.into_iter().collect::<String>()
-                        })
-                );
+                let adj: HashSet<String> =
+                    HashSet::from_iter(reg.clone().into_iter().map(|word| {
+                        let mut letters: Vec<char> = word
+                            .chars()
+                            .collect::<HashSet<char>>()
+                            .into_iter()
+                            .collect::<Vec<char>>();
+                        letters.sort();
+                        letters.into_iter().collect::<String>()
+                    }));
 
                 reg.len() == adj.len()
             })

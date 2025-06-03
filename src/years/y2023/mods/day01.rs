@@ -5,28 +5,38 @@ pub fn part_one() {
     println!(
         "{:?}",
         include_str!("../inputs/day01.txt")
-        .lines()
-        .map(|line| {
+            .lines()
+            .map(|line| {
                 let left = line
                     .chars()
                     .find(|char| char.to_digit(10).is_some())
                     .expect(format!("error fining left number in {line}").as_str());
                 let right = line
-                .chars()
-                .rev()
-                .find(|char| char.to_digit(10).is_some())
-                .expect(format!("error fining right number in {line}").as_str());
+                    .chars()
+                    .rev()
+                    .find(|char| char.to_digit(10).is_some())
+                    .expect(format!("error fining right number in {line}").as_str());
                 (left.to_string() + right.to_string().as_str())
                     .parse::<i32>()
                     .unwrap()
-                })
-                .sum::<i32>()
+            })
+            .sum::<i32>()
     );
 }
 
 #[allow(dead_code)]
 fn nums() -> HashMap<String, char> {
-    HashMap::from([("one".to_string(), '1'), ("two".to_string(), '2'), ("three".to_string(), '3'), ("four".to_string(), '4'), ("five".to_string(), '5'), ("six".to_string(), '6'), ("seven".to_string(), '7'), ("eight".to_string(), '8'), ("nine".to_string(), '9'),])
+    HashMap::from([
+        ("one".to_string(), '1'),
+        ("two".to_string(), '2'),
+        ("three".to_string(), '3'),
+        ("four".to_string(), '4'),
+        ("five".to_string(), '5'),
+        ("six".to_string(), '6'),
+        ("seven".to_string(), '7'),
+        ("eight".to_string(), '8'),
+        ("nine".to_string(), '9'),
+    ])
 }
 
 #[allow(dead_code)]
@@ -65,16 +75,16 @@ pub fn part_two() {
     println!(
         "{:?}",
         include_str!("../inputs/day01.txt")
-        .lines()
-        .map(|line| {
-                let left = find_left(line)
-                    .expect(format!("error finding left number in {line}").as_str());
+            .lines()
+            .map(|line| {
+                let left =
+                    find_left(line).expect(format!("error finding left number in {line}").as_str());
                 let right = find_right(line)
                     .expect(format!("error finding right number in {line}").as_str());
                 (left.to_string() + right.to_string().as_str())
                     .parse::<i32>()
                     .unwrap()
-                })
-                .sum::<i32>()
+            })
+            .sum::<i32>()
     );
 }

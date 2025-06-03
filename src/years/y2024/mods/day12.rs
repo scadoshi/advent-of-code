@@ -37,19 +37,20 @@ impl Map {
     fn build_regions(&self) -> Vec<HashSet<Coordinate>> {
         let directions = [
             Delta::new(-1, 0), // up
-            Delta::new(1, 0), // down
+            Delta::new(1, 0),  // down
             Delta::new(0, -1), // left
-            Delta::new(0, 1), // right
+            Delta::new(0, 1),  // right
         ];
 
         let mut seen: HashSet<Coordinate> = HashSet::new();
         let mut regions: Vec<HashSet<Coordinate>> = Vec::new();
 
         for r in 0..self.height {
-            for c in 0..self.width {  
+            for c in 0..self.width {
                 if let Some(coord) = Coordinate::new(r as isize, c as isize, self) {
-                    
-                    if seen.contains(&coord) { continue }
+                    if seen.contains(&coord) {
+                        continue;
+                    }
                     seen.insert(coord.clone());
 
                     let mut region: HashSet<Coordinate> = HashSet::from([coord.clone()]);
@@ -58,8 +59,12 @@ impl Map {
                     while let Some(q_coord) = q.pop_front() {
                         for eval_delta in directions.iter() {
                             if let Some(eval_coord) = q_coord.traverse(&eval_delta, self) {
-                                if region.contains(&eval_coord) { continue }
-                                if self.get_char(&q_coord) != self.get_char(&eval_coord) { continue }
+                                if region.contains(&eval_coord) {
+                                    continue;
+                                }
+                                if self.get_char(&q_coord) != self.get_char(&eval_coord) {
+                                    continue;
+                                }
 
                                 region.insert(eval_coord.clone());
                                 q.push_back(eval_coord.clone());
@@ -166,14 +171,16 @@ pub fn part_one() {
     let map = Map::from_input();
     let regions = map.build_regions();
 
-    let total: usize = regions.iter().map(|region|
-        region.iter().map(|coord| coord.perimeter(&map)).sum::<usize>()
-    ).sum();
+    let total: usize = regions
+        .iter()
+        .map(|region| {
+            region
+                .iter()
+                .map(|coord| coord.perimeter(&map))
+                .sum::<usize>()
+        })
+        .sum();
     println!("{:#?}", total);
 }
 
-pub fn part_two() {
-
-
-
-}
+pub fn part_two() {}

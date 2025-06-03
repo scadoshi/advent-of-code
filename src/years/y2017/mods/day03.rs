@@ -94,7 +94,7 @@ pub fn part_two() {
                 (x, y) = mmove(x, y, &dir);
                 num = adj_sum(x, y, &visited);
                 // println!("{} ({}, {}) {:#?}", num, x, y, visited); // debug
-                // std::thread::sleep(std::time::Duration::from_secs(1)); // debug          
+                // std::thread::sleep(std::time::Duration::from_secs(1)); // debug
                 if num > target {
                     break 'main;
                 }

@@ -47,7 +47,8 @@ impl Disk {
             new_disk.files.iter().position(|element| *element == None),
             Some(
                 new_disk.files.len()
-                    - new_disk.files
+                    - new_disk
+                        .files
                         .iter()
                         .rev()
                         .position(|element| element.is_some())
@@ -67,22 +68,22 @@ impl Disk {
         let position = self.files[..=*start_at]
             .iter()
             .rposition(|element| element.is_some())?;
-        
+
         // Get the file ID
         let file_id = self.files[position].unwrap();
-        
+
         // Find the start of this file by scanning left until we find a different value
         let start = (0..=position)
             .rev()
             .find(|&i| self.files[i] != Some(file_id))
             .map_or(0, |i| i + 1);
-        
+
         // Calculate the size by scanning right until we find a different value
         let size = self.files[start..]
             .iter()
             .take_while(|&&x| x == Some(file_id))
             .count();
-        
+
         Some((file_id, start, size))
     }
 
@@ -99,29 +100,28 @@ impl Disk {
         let mut new_disk: Disk = self.clone();
 
         // println!("starting with files...\n{}", Disk::files_to_string(&new_disk.files)); // debug
-    
+
         while let Some((file_id, file_location, file_size)) = self.find_file_from_right(&start_at) {
-            
             // println!("found file (id: {}, lc: {}, sz: {})", file_id, file_location, file_size); // debug
             // let file_print = new_disk.files[file_location..file_location + file_size].to_vec(); // debug
             // println!("showing file: {}", Disk::files_to_string(&file_print)); // debug
-            
+
             start_at = match file_location.checked_sub(1) {
                 Some(x) => x,
-                None => break
+                None => break,
             };
-    
+
             // Only look for free space up to the current file's location
-            if let Some(free_location) = new_disk.find_free_space_of_size(file_size, file_location) {
-                
+            if let Some(free_location) = new_disk.find_free_space_of_size(file_size, file_location)
+            {
                 // println!("found free space (lc: {})", free_location); // debug
-                
+
                 for i in free_location..free_location + file_size {
                     new_disk.files[i] = Some(file_id);
                 }
 
                 // println!("cloning file to free location...\n{}", Disk::files_to_string(&new_disk.files)); // debug
-                
+
                 for i in file_location..file_location + file_size {
                     new_disk.files[i] = None;
                 }
@@ -129,15 +129,23 @@ impl Disk {
                 // println!("==="); // debug
             }
         }
-        Disk { files: new_disk.files }
+        Disk {
+            files: new_disk.files,
+        }
     }
 
     #[allow(dead_code)]
     fn files_to_string(files: &Vec<Option<u64>>) -> String {
-        files.iter().map(|element| {
-            if element.is_none() {'.'.to_string()}
-            else {element.unwrap().to_string()}
-        }).collect::<String>()
+        files
+            .iter()
+            .map(|element| {
+                if element.is_none() {
+                    '.'.to_string()
+                } else {
+                    element.unwrap().to_string()
+                }
+            })
+            .collect::<String>()
     }
 
     #[allow(dead_code)]
@@ -240,7 +248,9 @@ mod tests {
     #[ignore]
     #[allow(dead_code)]
     fn test_compact_disk_via_migrating_files() {
-        let test = Disk::compact_disk_via_migrating_files(Disk::new("2333133121414131402".to_string())).files;
+        let test =
+            Disk::compact_disk_via_migrating_files(Disk::new("2333133121414131402".to_string()))
+                .files;
         let expected = str_to_files("00992111777.44.333....5555.6666.....8888..");
         assert_eq!(test, expected)
     }

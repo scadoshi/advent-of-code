@@ -17,7 +17,13 @@ pub fn part_one() {
     while !seen.contains(&memory_bank) {
         count += 1;
         seen.insert(memory_bank.clone());
-        let (mut i, mut distr) = memory_bank.clone().into_iter().enumerate().rev().max_by_key(|(_, x)| *x).expect("Max not found");
+        let (mut i, mut distr) = memory_bank
+            .clone()
+            .into_iter()
+            .enumerate()
+            .rev()
+            .max_by_key(|(_, x)| *x)
+            .expect("Max not found");
         memory_bank[i] = 0;
         while distr > 0 {
             i = (i + 1) % memory_bank.len();
@@ -26,15 +32,21 @@ pub fn part_one() {
         }
     }
     println!("{}", count);
-    
+
     let repeat = memory_bank.clone();
     let mut started = false;
     let mut count = 0;
-    
+
     while !started || memory_bank != repeat {
         started = true;
         count += 1;
-        let (mut i, mut distr) = memory_bank.clone().into_iter().enumerate().rev().max_by_key(|(_, x)| *x).expect("Max not found");
+        let (mut i, mut distr) = memory_bank
+            .clone()
+            .into_iter()
+            .enumerate()
+            .rev()
+            .max_by_key(|(_, x)| *x)
+            .expect("Max not found");
         memory_bank[i] = 0;
         while distr > 0 {
             i = (i + 1) % memory_bank.len();
@@ -43,7 +55,6 @@ pub fn part_one() {
         }
     }
     println!("{}", count);
-    
 }
 
 #[allow(dead_code)]

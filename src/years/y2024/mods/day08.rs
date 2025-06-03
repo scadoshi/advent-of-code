@@ -70,7 +70,7 @@ impl Coordinate {
         grid: &Grid,
     ) -> Option<Self> {
         let antidelta = Self::antidelta(pivot_coordinate, evaluate_coordinate);
-        
+
         Self::traverse(grid, pivot_coordinate, &antidelta, 1)
     }
 
@@ -80,7 +80,8 @@ impl Coordinate {
         evaluate_coordinate: &Coordinate,
         grid: &Grid,
     ) -> Option<HashSet<Self>> {
-        let mut antinodes: HashSet<Self> = HashSet::from([pivot_coordinate.clone(), evaluate_coordinate.clone()]);
+        let mut antinodes: HashSet<Self> =
+            HashSet::from([pivot_coordinate.clone(), evaluate_coordinate.clone()]);
         let mut steps = 1;
         let antidelta = Self::antidelta(pivot_coordinate, evaluate_coordinate);
 
@@ -109,8 +110,10 @@ pub fn part_one() {
                 // traverse grid again evaluating matching frequencies at other positions
                 for rr in 0..grid.rows {
                     for cc in 0..grid.cols {
-                        let evaluate_position = Coordinate::new(&grid, rr as i32, cc as i32).unwrap();
-                        let evaluate_char = grid.tiles[evaluate_position.row][evaluate_position.col];
+                        let evaluate_position =
+                            Coordinate::new(&grid, rr as i32, cc as i32).unwrap();
+                        let evaluate_char =
+                            grid.tiles[evaluate_position.row][evaluate_position.col];
 
                         // evaluation occurs here
                         if pivot_char == evaluate_char && pivot_position != evaluate_position {
@@ -148,7 +151,8 @@ pub fn part_two() {
                     for cc in 0..grid.cols {
                         let evaluate_position =
                             Coordinate::new(&grid, rr as i32, cc as i32).unwrap();
-                        let evaluate_char = grid.tiles[evaluate_position.row][evaluate_position.col];
+                        let evaluate_char =
+                            grid.tiles[evaluate_position.row][evaluate_position.col];
 
                         // evaluation occurs here
                         if pivot_char == evaluate_char && pivot_position != evaluate_position {

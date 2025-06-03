@@ -11,8 +11,16 @@ impl Move {
     #[allow(dead_code)]
     fn new(input: &str) -> Self {
         // e.g. "10 green"
-        let [color, count] = input.split_whitespace().rev().collect::<Vec<&str>>().try_into().unwrap();
-        Self { color: color.parse().unwrap(), count: count.parse().unwrap()}
+        let [color, count] = input
+            .split_whitespace()
+            .rev()
+            .collect::<Vec<&str>>()
+            .try_into()
+            .unwrap();
+        Self {
+            color: color.parse().unwrap(),
+            count: count.parse().unwrap(),
+        }
     }
 }
 
@@ -26,9 +34,9 @@ struct Game {
 impl Game {
     #[allow(dead_code)]
     fn new(input: &str) -> Self {
+        let [game_id_str, paramater_str] =
+            input.split(":").collect::<Vec<&str>>().try_into().unwrap();
 
-        let [game_id_str, paramater_str] = input.split(":").collect::<Vec<&str>>().try_into().unwrap();
-        
         let id: i32 = game_id_str[input.find("Game ").unwrap() + 5..input.find(":").unwrap()]
             .parse()
             .expect(
@@ -46,10 +54,7 @@ impl Game {
             .map(|move_str| Move::new(move_str))
             .collect();
 
-        Self {
-            id,
-            moves
-        }
+        Self { id, moves }
     }
 }
 
@@ -76,11 +81,11 @@ pub fn part_one() {
 
     let result = input
         .iter()
-        .filter(|game| game
-                .moves
+        .filter(|game| {
+            game.moves
                 .iter()
                 .all(|x| x.count <= *limits.get(&x.color).unwrap())
-            )
+        })
         .map(|game| game.id)
         .sum::<i32>();
 
@@ -93,16 +98,19 @@ pub fn part_two() {
 
     let result = input
         .iter()
-        .fold(Vec::new(), |mut counts_list: Vec<HashMap<String, i32>>, game| {
-            let mut counts: HashMap<String, i32> = HashMap::new();
-            game.moves.iter().for_each(|x| {
-                if !counts.contains_key(&x.color) || x.count > *counts.get(&x.color).unwrap() {
-                    counts.insert(x.color.clone(), x.count);
-                }
-            });
-            counts_list.push(counts);
-            counts_list
-        })
+        .fold(
+            Vec::new(),
+            |mut counts_list: Vec<HashMap<String, i32>>, game| {
+                let mut counts: HashMap<String, i32> = HashMap::new();
+                game.moves.iter().for_each(|x| {
+                    if !counts.contains_key(&x.color) || x.count > *counts.get(&x.color).unwrap() {
+                        counts.insert(x.color.clone(), x.count);
+                    }
+                });
+                counts_list.push(counts);
+                counts_list
+            },
+        )
         .iter()
         .map(|x| x.values().product::<i32>())
         .sum::<i32>();

@@ -155,11 +155,11 @@ impl Grid {
     }
 
     /// Simulates a guard's movement through a grid and counts unique positions visited
-    /// 
+    ///
     /// Takes ownership of a Grid and returns a tuple containing:
     /// - A HashMap mapping visited coordinates to the directions faced at that coordinate
     /// - A boolean indicating if simulation ended due to infinite loop (true) or moving off grid (false)
-    /// 
+    ///
     /// The simulation ends when either:
     /// - The guard moves off the grid
     /// - An infinite loop is detected (guard visits same position facing same direction)
@@ -217,7 +217,7 @@ pub fn part_one() {
 pub fn part_two() {
     let visited = Grid::simulate_guard(Grid::new()).0;
     let mut loop_obstacle_positions: Vec<Coordinate> = Vec::new();
-    
+
     for visited_entry in visited {
         let pos = visited_entry.0;
         let mut grid = Grid::new();
@@ -226,5 +226,5 @@ pub fn part_two() {
             loop_obstacle_positions.push(pos);
         }
     }
-    println!("{}",loop_obstacle_positions.len());
+    println!("{}", loop_obstacle_positions.len());
 }

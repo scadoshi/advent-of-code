@@ -43,7 +43,9 @@ pub fn part_two() {
                 dimensions
             })
             .map(|dimensions| {
-                (dimensions[0]*2)+(dimensions[1]*2)+(dimensions[0]*dimensions[1]*dimensions[2])
+                (dimensions[0] * 2)
+                    + (dimensions[1] * 2)
+                    + (dimensions[0] * dimensions[1] * dimensions[2])
             })
             .sum::<i32>()
     );

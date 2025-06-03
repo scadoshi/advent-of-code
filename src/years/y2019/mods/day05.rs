@@ -223,5 +223,5 @@ pub fn part_one() {
 
 #[allow(dead_code)]
 pub fn part_two() {
-    println!("{:?}",intcode_computer(&input(), 5));
+    println!("{:?}", intcode_computer(&input(), 5));
 }

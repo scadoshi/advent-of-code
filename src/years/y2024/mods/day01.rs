@@ -34,7 +34,9 @@ impl Input {
 #[allow(dead_code)]
 pub fn part_one() {
     let input = Input::new();
-    let total: i32 = input.left_list.iter()
+    let total: i32 = input
+        .left_list
+        .iter()
         .zip(input.right_list.iter())
         .map(|(left, right)| (left - right).abs())
         .sum();
@@ -45,15 +47,18 @@ pub fn part_one() {
 pub fn part_two() {
     let input = Input::new();
 
-    let right_map: HashMap<i32, i32> = input.right_list.iter()
-        .fold(HashMap::new(), |mut map, &num| {
-            *map.entry(num).or_insert(0) += 1;
-            map
-        });
+    let right_map: HashMap<i32, i32> =
+        input
+            .right_list
+            .iter()
+            .fold(HashMap::new(), |mut map, &num| {
+                *map.entry(num).or_insert(0) += 1;
+                map
+            });
 
     let mut total = 0;
     for num in input.left_list {
-        total += num*right_map.get(&num).unwrap_or(&0);
+        total += num * right_map.get(&num).unwrap_or(&0);
     }
     println!("{}", total);
 }

@@ -54,10 +54,7 @@ pub fn part_two() {
                 // get left side components
                 let [pos1_str, pos2_str, char_str] = parameters
                     .split_whitespace()
-                    .flat_map(|x| {
-                        x.split('-')
-                            .collect::<Vec<&str>>()
-                    })
+                    .flat_map(|x| x.split('-').collect::<Vec<&str>>())
                     .collect::<Vec<&str>>()
                     .try_into()
                     .unwrap();

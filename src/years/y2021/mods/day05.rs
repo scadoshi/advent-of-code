@@ -86,6 +86,6 @@ pub fn part_two() {
         }
     }
     println!("{}", overlaps.len());
-    let range = ((1,1), (3,3));
+    let range = ((1, 1), (3, 3));
     println!("{:?}", line_from_range(range, false));
 }

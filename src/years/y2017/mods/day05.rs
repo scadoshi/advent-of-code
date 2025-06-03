@@ -19,7 +19,7 @@ pub fn part_one() {
 }
 
 #[allow(dead_code)]
-pub fn part_two(){
+pub fn part_two() {
     let mut maze: Vec<isize> = include_str!("../inputs/day05.txt")
         .lines()
         .map(|x| x.parse::<isize>().unwrap())

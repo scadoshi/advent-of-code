@@ -48,7 +48,7 @@ fn do_operation(num1: i64, num2: i64, operator: Operator) -> i64 {
 
 // Kept for reference: Shows binary pattern representation
 // Note: numbers_to_operators() has been updated and is now incompatible here
-// 
+//
 // #[allow(dead_code)]
 // fn operator_combinations_binary_method(numbers: &Vec<i64>) -> Vec<Vec<Operator>> {
 //     let position_count = numbers.len() - 1;
@@ -60,7 +60,11 @@ fn do_operation(num1: i64, num2: i64, operator: Operator) -> i64 {
 // }
 
 #[allow(dead_code)]
-fn all_combinations(position_count: usize, element_count: usize, current: &mut Vec<usize>) -> Vec<Vec<usize>> {
+fn all_combinations(
+    position_count: usize,
+    element_count: usize,
+    current: &mut Vec<usize>,
+) -> Vec<Vec<usize>> {
     let mut combinations: Vec<Vec<usize>> = Vec::new();
 
     if position_count == 0 {
@@ -101,7 +105,7 @@ fn numbers_reach_target(numbers: &Vec<i64>, target: &i64, operators: &Vec<Operat
         //
         // total = 1
         // total = 1 * 2  (first operation)
-        // total = 2 + 3  (second operation) 
+        // total = 2 + 3  (second operation)
         // total = 5 || 4 (third operation)
         for (number, operator) in numbers.iter().skip(1).zip(combination) {
             total = do_operation(total, *number, operator)

@@ -60,16 +60,16 @@ pub fn part_one() {
 }
 
 #[allow(dead_code)]
-const MAIN_DIAG_MOVES: ((i32, i32),(i32, i32)) = (
+const MAIN_DIAG_MOVES: ((i32, i32), (i32, i32)) = (
     (-1, 1), // up-right
-    (1, -1) // down-left
+    (1, -1), // down-left
 );
 
 #[allow(dead_code)]
-const ANTI_DIAG_MOVES: ((i32, i32),(i32, i32)) = (
+const ANTI_DIAG_MOVES: ((i32, i32), (i32, i32)) = (
     (-1, -1), // up-left
-    (1, 1) // down-right
-);  
+    (1, 1),   // down-right
+);
 
 #[allow(dead_code)]
 pub fn part_two() {
@@ -86,20 +86,34 @@ pub fn part_two() {
                 let mut diag_pass_count = 0;
                 // iter through moves in both diagonals
                 for (move1, move2) in [MAIN_DIAG_MOVES, ANTI_DIAG_MOVES] {
-                    
                     // generate new positions
-                    let (new_pos1, new_pos2): ((i32, i32),(i32, i32)) = ((r + move1.0, c + move1.1),(r + move2.0, c + move2.1));
-                    
+                    let (new_pos1, new_pos2): ((i32, i32), (i32, i32)) =
+                        ((r + move1.0, c + move1.1), (r + move2.0, c + move2.1));
+
                     // in bounds
-                    if new_pos1.0 >= 0  && new_pos1.1 >= 0  && new_pos2.0 >= 0  && new_pos2.1 >= 0
-                    && new_pos1.0 < rows  && new_pos1.1 < cols  && new_pos2.0 < rows  && new_pos2.1 < cols {
+                    if new_pos1.0 >= 0
+                        && new_pos1.1 >= 0
+                        && new_pos2.0 >= 0
+                        && new_pos2.1 >= 0
+                        && new_pos1.0 < rows
+                        && new_pos1.1 < cols
+                        && new_pos2.0 < rows
+                        && new_pos2.1 < cols
+                    {
                         // safe to generate characters
-                        let (char1, char2) = (input[new_pos1.0 as usize][new_pos1.1 as usize],input[new_pos2.0 as usize][new_pos2.1 as usize]);
+                        let (char1, char2) = (
+                            input[new_pos1.0 as usize][new_pos1.1 as usize],
+                            input[new_pos2.0 as usize][new_pos2.1 as usize],
+                        );
                         // compare characters
-                        if "MS".contains(char1) && "MS".contains(char2) && char1 != char2 {diag_pass_count += 1;}
-                        if diag_pass_count == 2 {total += 1;}
+                        if "MS".contains(char1) && "MS".contains(char2) && char1 != char2 {
+                            diag_pass_count += 1;
+                        }
+                        if diag_pass_count == 2 {
+                            total += 1;
+                        }
                     }
-                } 
+                }
             }
         }
     }

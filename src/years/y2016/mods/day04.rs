@@ -60,22 +60,32 @@ pub fn part_two() {
         .iter()
         .fold(Vec::new(), |mut decoded_rooms: Vec<String>, room| {
             decoded_rooms.push(
-                room.1.to_string() + " - " + &room.0
-                    .chars()
-                    .map(|letter| {
-                        if letter == '-' {
-                            return ' ';
-                        }
-                        let a = 'a' as i32;
-                        char::from(u8::try_from(((letter as i32 - a + room.1) % 26) + a).unwrap())
-                    })
-                    .collect::<String>(),
+                room.1.to_string()
+                    + " - "
+                    + &room
+                        .0
+                        .chars()
+                        .map(|letter| {
+                            if letter == '-' {
+                                return ' ';
+                            }
+                            let a = 'a' as i32;
+                            char::from(
+                                u8::try_from(((letter as i32 - a + room.1) % 26) + a).unwrap(),
+                            )
+                        })
+                        .collect::<String>(),
             );
             decoded_rooms
         });
 
     println!("{:#?}", decoded_rooms);
-    println!("{:#?}", decoded_rooms.iter().find(|room_string| {
-        room_string.contains("north") || room_string.contains("pole") || room_string.contains("object")
-    }))
+    println!(
+        "{:#?}",
+        decoded_rooms.iter().find(|room_string| {
+            room_string.contains("north")
+                || room_string.contains("pole")
+                || room_string.contains("object")
+        })
+    )
 }

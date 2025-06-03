@@ -61,8 +61,7 @@ impl Scratcher {
 
     #[allow(dead_code)]
     fn winners(&self) -> u32 {
-        self
-            .play_nums
+        self.play_nums
             .iter()
             .filter(|x| self.win_nums.contains(x))
             .count() as u32
@@ -83,10 +82,7 @@ impl Scratcher {
 pub fn part_one() {
     println!(
         "{:?}",
-        Scratcher::input()
-            .iter()
-            .map(|x| x.points())
-            .sum::<u32>()
+        Scratcher::input().iter().map(|x| x.points()).sum::<u32>()
     );
 }
 
@@ -102,7 +98,13 @@ pub fn part_two() {
         let winners = scratchers[i].winners();
         if winners > 0 {
             for other_id in scratchers[i].id + 1..=scratchers[i].id + winners {
-                scratchers.push(scratchers.iter().find(|x| x.id == other_id).unwrap().clone())
+                scratchers.push(
+                    scratchers
+                        .iter()
+                        .find(|x| x.id == other_id)
+                        .unwrap()
+                        .clone(),
+                )
             }
         }
         i += 1;

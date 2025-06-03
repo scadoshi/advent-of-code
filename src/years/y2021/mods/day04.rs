@@ -65,7 +65,6 @@ pub fn part_one() {
     'main: for num in nums() {
         last_num = num;
         for board in boards.iter_mut() {
-            
             // find position of line with matching num
             if let Some(line_i) = board
                 .iter()
@@ -110,12 +109,11 @@ pub fn part_two() {
     'main: for num in nums() {
         last_num = num;
         for board in boards.iter_mut() {
-
             // skip if board already won
             if is_bingo(&board) {
-                continue
+                continue;
             }
-            
+
             // find position of line with matching num
             if let Some(line_i) = board
                 .iter()
@@ -132,8 +130,8 @@ pub fn part_two() {
 
             if is_bingo(&board) {
                 total_wins += 1;
-                    if total_wins == final_win {
-                        let sum_of_non_hits = board
+                if total_wins == final_win {
+                    let sum_of_non_hits = board
                         .iter()
                         .map(|line| {
                             line.iter()

@@ -11,7 +11,6 @@ pub fn part_one() {
             .map(|x| x.replace("B", "Paper"))
             .map(|x| x.replace("C", "Scissors"))
             .fold(0, |mut score, line| {
-
                 // println!("{}", line);
 
                 let opp_move: &str = line.split_whitespace().next().unwrap();
@@ -23,8 +22,10 @@ pub fn part_one() {
                         match opp_move {
                             "Rock" => score += 3,
                             "Paper" => (),
-                            "Scissors" => score += 6, 
-                            _ => { println!("r f"); }
+                            "Scissors" => score += 6,
+                            _ => {
+                                println!("r f");
+                            }
                         }
                     }
                     "Paper" => {
@@ -32,8 +33,10 @@ pub fn part_one() {
                         match opp_move {
                             "Rock" => score += 6,
                             "Paper" => score += 3,
-                            "Scissors" => (), 
-                            _ => { println!("p f"); }
+                            "Scissors" => (),
+                            _ => {
+                                println!("p f");
+                            }
                         }
                     }
                     "Scissors" => {
@@ -41,13 +44,17 @@ pub fn part_one() {
                         match opp_move {
                             "Rock" => (),
                             "Paper" => score += 6,
-                            "Scissors" => score += 3, 
-                            _ => { println!("s f"); }
+                            "Scissors" => score += 3,
+                            _ => {
+                                println!("s f");
+                            }
                         }
                     }
-                    _ => { println!("{my_move}"); }
+                    _ => {
+                        println!("{my_move}");
+                    }
                 }
-                score    
+                score
             })
     )
 }
@@ -65,28 +72,29 @@ pub fn part_two() {
             .map(|x| x.replace("B", "Paper"))
             .map(|x| x.replace("C", "Scissors"))
             .fold(0, |mut score, line| {
-
                 // println!("{}", line);
 
                 let opp_move: &str = line.split_whitespace().next().unwrap();
                 let my_move: &str = line.split_whitespace().nth(1).unwrap();
 
                 match my_move {
-                    "Lose" => {
-                        match opp_move {
-                            "Rock" => score += 3,
-                            "Paper" => score += 1,
-                            "Scissors" => score += 2, 
-                            _ => { println!("r f"); }
+                    "Lose" => match opp_move {
+                        "Rock" => score += 3,
+                        "Paper" => score += 1,
+                        "Scissors" => score += 2,
+                        _ => {
+                            println!("r f");
                         }
-                    }
+                    },
                     "Draw" => {
                         score += 3;
                         match opp_move {
                             "Rock" => score += 1,
                             "Paper" => score += 2,
-                            "Scissors" => score += 3, 
-                            _ => { println!("p f"); }
+                            "Scissors" => score += 3,
+                            _ => {
+                                println!("p f");
+                            }
                         }
                     }
                     "Win" => {
@@ -94,13 +102,17 @@ pub fn part_two() {
                         match opp_move {
                             "Rock" => score += 2,
                             "Paper" => score += 3,
-                            "Scissors" => score += 1,  
-                            _ => { println!("s f"); }
+                            "Scissors" => score += 1,
+                            _ => {
+                                println!("s f");
+                            }
                         }
                     }
-                    _ => { println!("{my_move}"); }
+                    _ => {
+                        println!("{my_move}");
+                    }
                 }
-                score    
+                score
             })
     )
 }

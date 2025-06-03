@@ -9,17 +9,23 @@ struct Map {
 impl Map {
     #[allow(dead_code)]
     fn from_string(input: String) -> Self {
-        let grid: Vec<Vec<usize>> = input.lines()
-            .map(|line| line.chars()
-                .map(|c| 
-                    c.to_digit(10).unwrap() as usize
-                ).collect()
-            ).collect();
+        let grid: Vec<Vec<usize>> = input
+            .lines()
+            .map(|line| {
+                line.chars()
+                    .map(|c| c.to_digit(10).unwrap() as usize)
+                    .collect()
+            })
+            .collect();
 
         let row_limit = grid.len();
         let col_limit = grid[0].len();
 
-        Self { grid, row_limit, col_limit }
+        Self {
+            grid,
+            row_limit,
+            col_limit,
+        }
     }
 
     #[allow(dead_code)]
@@ -29,7 +35,9 @@ impl Map {
 
     #[allow(dead_code)]
     fn collect_start_positions(&self) -> Vec<Coordinate> {
-        self.grid.iter().enumerate()
+        self.grid
+            .iter()
+            .enumerate()
             .fold(Vec::new(), |mut start_positions, (row_i, row)| {
                 start_positions.extend(row.iter().enumerate().filter_map(|(col_i, col)| {
                     if *col == 0 {
@@ -54,7 +62,7 @@ struct Delta {
 #[allow(dead_code)]
 struct Coordinate {
     row_i: usize,
-    col_i: usize
+    col_i: usize,
 }
 
 impl Delta {
@@ -64,8 +72,12 @@ impl Delta {
     }
 
     #[allow(dead_code)]
-    fn to_coordinate(&self, map:&Map) -> Option<Coordinate> {
-        if self.row_d < 0 || self.col_d < 0 || self.row_d >= map.row_limit as isize || self.col_d >= map.col_limit as isize {
+    fn to_coordinate(&self, map: &Map) -> Option<Coordinate> {
+        if self.row_d < 0
+            || self.col_d < 0
+            || self.row_d >= map.row_limit as isize
+            || self.col_d >= map.col_limit as isize
+        {
             None
         } else {
             Some(Coordinate::new(self.row_d as usize, self.col_d as usize))
@@ -73,14 +85,10 @@ impl Delta {
     }
 }
 
-
 impl Coordinate {
     #[allow(dead_code)]
     fn new(row_i: usize, col_i: usize) -> Self {
-        Self {
-            row_i,
-            col_i
-        }
+        Self { row_i, col_i }
     }
 
     #[allow(dead_code)]
@@ -90,19 +98,18 @@ impl Coordinate {
         Delta::new(row_d, col_d).to_coordinate(map)
     }
 
-
     #[allow(dead_code)]
     fn count_reaching_paths(&self, map: &Map) -> i32 {
         let mut total = 0;
-        let current_height = self.get_height(map);        
+        let current_height = self.get_height(map);
 
         let directions: [Delta; 4] = [
             Delta::new(-1, 0), // up
             Delta::new(1, 0),  // down
             Delta::new(0, -1), // left
-            Delta::new(0, 1)   // right
+            Delta::new(0, 1),  // right
         ];
-        
+
         if current_height == 9 {
             return 1;
         }
@@ -110,7 +117,9 @@ impl Coordinate {
         // recursion happens here
         for direction in directions {
             let new_coordinate = self.move_coordinate(direction, map);
-            if new_coordinate.is_some() && current_height + 1 == new_coordinate.as_ref().unwrap().get_height(map) {
+            if new_coordinate.is_some()
+                && current_height + 1 == new_coordinate.as_ref().unwrap().get_height(map)
+            {
                 total += new_coordinate.unwrap().count_reaching_paths(map);
             }
         }
@@ -128,7 +137,7 @@ impl Coordinate {
         if visited.contains(self) {
             return 0;
         }
-        
+
         let current_height = self.get_height(map);
         if current_height == 9 {
             visited.push(self.clone());
@@ -142,9 +151,9 @@ impl Coordinate {
             Delta::new(-1, 0), // up
             Delta::new(1, 0),  // down
             Delta::new(0, -1), // left
-            Delta::new(0, 1)   // right
+            Delta::new(0, 1),  // right
         ];
-        
+
         for direction in directions {
             if let Some(new_coordinate) = self.move_coordinate(direction, map) {
                 if current_height + 1 == new_coordinate.get_height(map) {
@@ -155,19 +164,20 @@ impl Coordinate {
         total
     }
 
-
     #[allow(dead_code)]
     fn get_height(&self, map: &Map) -> usize {
         map.grid[self.row_i][self.col_i]
     }
 }
 
-
 #[allow(dead_code)]
 pub fn part_one() {
     let map = Map::from_input();
     let start_positions = map.collect_start_positions();
-    let total_paths: i32 = start_positions.iter().map(|start_position| start_position.count_reachable_points(&map)).sum();
+    let total_paths: i32 = start_positions
+        .iter()
+        .map(|start_position| start_position.count_reachable_points(&map))
+        .sum();
     println!("{}", total_paths);
 }
 
@@ -175,24 +185,30 @@ pub fn part_one() {
 pub fn part_two() {
     let map = Map::from_input();
     let start_positions = map.collect_start_positions();
-    let total_paths: i32 = start_positions.iter().map(|start_position| start_position.count_reaching_paths(&map)).sum();
+    let total_paths: i32 = start_positions
+        .iter()
+        .map(|start_position| start_position.count_reaching_paths(&map))
+        .sum();
     println!("{}", total_paths);
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[ignore]
     #[allow(dead_code)]
     fn test_start_positions() {
-        let map = Map::from_string("103\n\
+        let map = Map::from_string(
+            "103\n\
                                                 056\n\
                                                 709\n\
                                                 010\n\
-                                                890".to_string());
+                                                890"
+            .to_string(),
+        );
         let start_positions = map.collect_start_positions();
-        assert_eq!(start_positions.len(), 6); 
+        assert_eq!(start_positions.len(), 6);
     }
 
     #[ignore]
@@ -202,10 +218,14 @@ mod tests {
                                   083078890\n\
                                   804569000\n\
                                   765890000\n\
-                                  006789000".to_string();
+                                  006789000"
+            .to_string();
         let map = Map::from_string(test_input);
         let start_positions = map.collect_start_positions();
-        let total_paths: i32 = start_positions.iter().map(|start_position| start_position.count_reaching_paths(&map)).sum();
+        let total_paths: i32 = start_positions
+            .iter()
+            .map(|start_position| start_position.count_reaching_paths(&map))
+            .sum();
         assert_eq!(total_paths, 6);
     }
 
@@ -215,11 +235,15 @@ mod tests {
         let test_input = "0123\n\
                                   9994\n\
                                   9895\n\
-                                  9876".to_string();
+                                  9876"
+            .to_string();
         let map = Map::from_string(test_input);
         let start_positions = map.collect_start_positions();
-        let total_paths: i32 = start_positions.iter().map(|start_position| start_position.count_reaching_paths(&map)).sum();
-        assert_eq!(total_paths, 1);  // Only one path should reach a 9
+        let total_paths: i32 = start_positions
+            .iter()
+            .map(|start_position| start_position.count_reaching_paths(&map))
+            .sum();
+        assert_eq!(total_paths, 1); // Only one path should reach a 9
     }
 
     #[ignore]
@@ -231,11 +255,15 @@ mod tests {
                                   6543456\n\
                                   7999997\n\
                                   8899988\n\
-                                  9999999".to_string();
+                                  9999999"
+            .to_string();
         let map = Map::from_string(test_input);
         let start_positions = map.collect_start_positions();
-        let total_paths: i32 = start_positions.iter().map(|start_position| start_position.count_reaching_paths(&map)).sum();
-        assert_eq!(total_paths, 2);  // One trailhead can reach two 9s
+        let total_paths: i32 = start_positions
+            .iter()
+            .map(|start_position| start_position.count_reaching_paths(&map))
+            .sum();
+        assert_eq!(total_paths, 2); // One trailhead can reach two 9s
     }
 
     // This test might help identify if we're double-counting paths
@@ -246,11 +274,15 @@ mod tests {
                                   23\n\
                                   45\n\
                                   67\n\
-                                  89".to_string();
+                                  89"
+        .to_string();
         let map = Map::from_string(test_input);
         let start_positions = map.collect_start_positions();
-        let total_paths: i32 = start_positions.iter().map(|start_position| start_position.count_reaching_paths(&map)).sum();
-        assert_eq!(total_paths, 0);  // Only one possible path
+        let total_paths: i32 = start_positions
+            .iter()
+            .map(|start_position| start_position.count_reaching_paths(&map))
+            .sum();
+        assert_eq!(total_paths, 0); // Only one possible path
     }
 
     #[ignore]
@@ -260,16 +292,14 @@ mod tests {
                                   09345078000\n\
                                   00406080000\n\
                                   08587090000\n\
-                                  87678000000".to_string();
+                                  87678000000"
+            .to_string();
         let map = Map::from_string(test_input);
         let start_positions = map.collect_start_positions();
-        let total_paths: i32 = start_positions.iter().map(|start_position| start_position.count_reaching_paths(&map)).sum();
+        let total_paths: i32 = start_positions
+            .iter()
+            .map(|start_position| start_position.count_reaching_paths(&map))
+            .sum();
         assert_eq!(total_paths, 1);
     }
 }
-
-
-
-
-
-

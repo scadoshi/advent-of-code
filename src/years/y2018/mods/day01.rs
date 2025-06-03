@@ -2,9 +2,10 @@ use std::collections::HashSet;
 
 #[allow(dead_code)]
 fn input() -> Vec<i32> {
-    include_str!("../inputs/day01.txt").lines()
-    .map(|line| line.parse::<i32>().unwrap())
-    .collect()
+    include_str!("../inputs/day01.txt")
+        .lines()
+        .map(|line| line.parse::<i32>().unwrap())
+        .collect()
 }
 
 #[allow(dead_code)]
@@ -24,6 +25,6 @@ pub fn part_two() {
         frequency += nums[p];
         p = (p + 1) % nums.len();
     }
-    
+
     println!("{}", frequency);
 }

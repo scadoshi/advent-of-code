@@ -43,7 +43,10 @@ fn intake_check(win: &String, curr_state: &bool) -> bool {
 pub fn part_one() {
     let mut total = 0;
 
-    for win in input().windows(12).map(|win| win.iter().collect::<String>()) {
+    for win in input()
+        .windows(12)
+        .map(|win| win.iter().collect::<String>())
+    {
         total += mul_match_incr(&win);
     }
 
@@ -55,8 +58,10 @@ pub fn part_two() {
     let mut total = 0;
     let mut intaking = true;
 
-    for win in input().windows(12).map(|win| win.iter().collect::<String>()) {
-
+    for win in input()
+        .windows(12)
+        .map(|win| win.iter().collect::<String>())
+    {
         intaking = intake_check(&win, &intaking);
 
         if intaking {
