@@ -142,10 +142,11 @@ impl TryFrom<HashNodes> for TreeNode {
 
 impl TreeNode {
     fn new(from: TupleNode, nodes: HashNodes) -> Self {
+        todo!("build the children to recursively build children nodes");
         TreeNode {
             name: from.0,
             weight: from.1.weight,
-            children: vec![],
+            children: Vec::new(),
         }
     }
 }
