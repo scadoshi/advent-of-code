@@ -107,6 +107,7 @@ impl Root for HashNodes {
     }
 }
 
+#[derive(Debug, Default)]
 struct TreeNode {
     name: String,
     weight: usize,
@@ -133,21 +134,41 @@ impl Error for TreeNodeError {
 impl TryFrom<HashNodes> for TreeNode {
     type Error = TreeNodeError;
     fn try_from(value: HashNodes) -> Result<Self, Self::Error> {
-        let (name, NodeData { weight, children }) =
-            value.root().ok_or_else(|| TreeNodeError::RootNotFound)?;
-
-        todo!()
+        let tuple_node = value.root().ok_or_else(|| TreeNodeError::RootNotFound)?;
+        Ok(TreeNode::new(tuple_node, &value))
     }
 }
 
 impl TreeNode {
-    fn new(from: TupleNode, nodes: HashNodes) -> Self {
-        todo!("build the children to recursively build children nodes");
+    fn new(from: TupleNode, nodes: &HashNodes) -> Self {
         TreeNode {
             name: from.0,
             weight: from.1.weight,
-            children: Vec::new(),
+            children: from
+                .1
+                .children
+                .into_iter()
+                .map(|c| {
+                    Box::new(TreeNode::new(
+                        nodes
+                            .iter()
+                            .find(|(name, _)| **name == c)
+                            .map(|(name, data)| (name.clone(), data.clone()))
+                            .unwrap(),
+                        nodes,
+                    ))
+                })
+                .collect(),
         }
+    }
+
+    fn total_weight(&self) -> usize {
+        self.weight
+            + self
+                .children
+                .iter()
+                .map(|c| c.total_weight())
+                .sum::<usize>()
     }
 }
 
@@ -157,15 +178,29 @@ pub fn part_one() -> Result<(), Box<dyn Error>> {
     println!(
         "{:#?}\n...\nruntime={:?}",
         {
-            let x = include_str!("../inputs/day07.txt")
+            let hashnodes = include_str!("../inputs/day07.txt")
                 .lines()
                 .map(|s| Node::from_str(s))
                 .collect::<Result<HashNodes, _>>()?;
-            x.root()
+
+            let treenode = TreeNode::try_from(hashnodes)?;
+
+            let treenode_weights = treenode
+                .children
+                .iter()
+                .map(|c| c.total_weight())
+                .collect::<Box<[usize]>>();
+
+            let mut out_msg = String::new();
+            if treenode_weights[0]
+                != treenode_weights.iter().sum::<usize>() / treenode_weights.len()
+            {
+                out_msg = "not balanced".to_string();
+            }
+            out_msg
         },
         start.elapsed()
     );
-
     Ok(())
 }
 
