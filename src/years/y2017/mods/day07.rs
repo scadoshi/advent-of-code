@@ -37,7 +37,7 @@ impl Error for NodeError {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq, Eq, Clone)]
 struct NodeData {
     weight: usize,
     children: Vec<String>,
@@ -81,7 +81,6 @@ impl std::str::FromStr for Node {
 }
 
 type HashNodes = HashMap<String, NodeData>;
-
 impl FromIterator<Node> for HashNodes {
     fn from_iter<T: IntoIterator<Item = Node>>(iter: T) -> Self {
         iter.into_iter()
@@ -91,19 +90,63 @@ impl FromIterator<Node> for HashNodes {
 }
 
 trait Root {
-    fn root(&self) -> Option<String>;
+    fn root(&self) -> Option<TupleNode>;
 }
 
+type TupleNode = (String, NodeData);
 impl Root for HashNodes {
-    fn root(&self) -> Option<String> {
+    fn root(&self) -> Option<TupleNode> {
         let children: Vec<&String> = self
             .values()
             .filter(|x| !x.children.is_empty())
             .flat_map(|x| &x.children)
             .collect();
-        self.keys()
-            .find(|k| !children.contains(k))
-            .map(|x| x.to_owned())
+        self.iter()
+            .find(|k| !children.contains(&k.0))
+            .map(|(name, data)| (name.clone(), data.clone()))
+    }
+}
+
+struct TreeNode {
+    name: String,
+    weight: usize,
+    children: Vec<Box<TreeNode>>,
+}
+
+#[derive(Debug)]
+enum TreeNodeError {
+    RootNotFound,
+}
+
+impl Display for TreeNodeError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "root not found")
+    }
+}
+
+impl Error for TreeNodeError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        None
+    }
+}
+
+impl TryFrom<HashNodes> for TreeNode {
+    type Error = TreeNodeError;
+    fn try_from(value: HashNodes) -> Result<Self, Self::Error> {
+        let (name, NodeData { weight, children }) =
+            value.root().ok_or_else(|| TreeNodeError::RootNotFound)?;
+
+        todo!()
+    }
+}
+
+impl TreeNode {
+    fn new(from: TupleNode, nodes: HashNodes) -> Self {
+        TreeNode {
+            name: from.0,
+            weight: from.1.weight,
+            children: vec![],
+        }
     }
 }
 
