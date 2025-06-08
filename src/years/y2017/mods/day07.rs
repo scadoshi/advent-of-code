@@ -178,6 +178,15 @@ impl TreeNode {
             return None;
         }
 
+        if self
+            .children
+            .iter()
+            .skip(1)
+            .all(|c| c.total_weight() == self.children[0].total_weight())
+        {
+            return None;
+        }
+
         // hashmap to group children by their total weights
         let weights: HashMap<usize, Vec<&TreeNode>> =
             self.children.iter().fold(HashMap::new(), |mut map, c| {
@@ -191,11 +200,15 @@ impl TreeNode {
             // based on rules of the aoc problem
             // the expect below is safe
             // as there always be one imbalanced node
+            // edit later with test data
+            // it is not safe haha
+            // because we could be inside of a balanced tree
+            // doing an early return above for that option and it worked :)))))))))
 
             let (min_weight, unbalanced_child) = weights
                 .iter()
                 .find(|c| c.1.len() == 1)
-                .expect("unbalanced_child not found");
+                .expect(format!("unbalanced_child not found in {:#?}", weights).as_str());
 
             let (maj_weight, _) = weights
                 .iter()
@@ -213,23 +226,26 @@ impl TreeNode {
         // we are going to have to recur into those children/that child
         // to find imbalance
         if self.children.len() < 3 {
-            return self
+            if let Some(ubc) = self
                 .children
                 .iter()
                 .find(|c| c.unbalanced_child_and_balancing_weight().is_some())
-                .unwrap()
-                .unbalanced_child_and_balancing_weight();
+            {
+                return ubc.unbalanced_child_and_balancing_weight();
+            } else {
+                return None;
+            }
         }
 
         None
     }
 
     fn deepest_unbalanced_child(&self) -> Option<(TreeNode, usize)> {
-        if let Some((curr_uc, _)) = self.unbalanced_child_and_balancing_weight() {
-            if curr_uc.unbalanced_child_and_balancing_weight().is_none() {
+        if let Some((curr_ubc, _)) = self.unbalanced_child_and_balancing_weight() {
+            if curr_ubc.unbalanced_child_and_balancing_weight().is_none() {
                 return self.unbalanced_child_and_balancing_weight();
             } else {
-                return curr_uc.deepest_unbalanced_child();
+                return curr_ubc.deepest_unbalanced_child();
             }
         }
         None
@@ -268,7 +284,7 @@ pub fn part_two() -> Result<(), Box<dyn Error>> {
                 .collect::<Result<HashNodes, _>>()?;
 
             let treenode = TreeNode::try_from(hashnodes).expect("failed to build treenode");
-            treenode.deepest_unbalanced_child()
+            treenode.deepest_unbalanced_child().expect("shoot").1
         },
         start.elapsed()
     );
