@@ -213,9 +213,25 @@ impl TreeNode {
         // we are going to have to recur into those children/that child
         // to find imbalance
         if self.children.len() < 3 {
-            self.children
+            return self
+                .children
+                .iter()
+                .find(|c| c.unbalanced_child_and_balancing_weight().is_some())
+                .unwrap()
+                .unbalanced_child_and_balancing_weight();
         }
 
+        None
+    }
+
+    fn deepest_unbalanced_child(&self) -> Option<(TreeNode, usize)> {
+        if let Some((curr_uc, _)) = self.unbalanced_child_and_balancing_weight() {
+            if curr_uc.unbalanced_child_and_balancing_weight().is_none() {
+                return self.unbalanced_child_and_balancing_weight();
+            } else {
+                return curr_uc.deepest_unbalanced_child();
+            }
+        }
         None
     }
 }
@@ -252,8 +268,7 @@ pub fn part_two() -> Result<(), Box<dyn Error>> {
                 .collect::<Result<HashNodes, _>>()?;
 
             let treenode = TreeNode::try_from(hashnodes).expect("failed to build treenode");
-            let megatron = treenode.unbalanced_child_and_balancing_weight().unwrap();
-            megatron
+            treenode.deepest_unbalanced_child()
         },
         start.elapsed()
     );
