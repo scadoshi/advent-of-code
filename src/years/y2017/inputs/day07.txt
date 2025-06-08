@@ -1,13 +1,67 @@
-tknk (41) -> ugml, padx, fwft
-ugml (68) -> gyxo, ebii, jptl
-padx (45) -> pbga, havc, qoyq
-fwft (72) -> ktlj, cntj, xhth
-gyxo (61)
-ebii (61)
-jptl (61)
-pbga (66)
-havc (66)
-qoyq (66)
-ktlj (57)
-cntj (57)
-xhth (57)
+// Visual Tree Structure (Sideways):
+//
+// optimus (10 | 309)
+// ├── bumblebee (10 | 100)
+// │   ├── wheeljack (10 | 30)
+// │   │   ├── prowl (10 | 10)
+// │   │   └── jazz (10 | 10)
+// │   ├── ironhide (10 | 30)
+// │   │   ├── sideswipe (10 | 10)
+// │   │   └── sunstreaker (10 | 10)
+// │   └── ratchet (10 | 30)
+// │       ├── mirage (10 | 10)
+// │       └── trailbreaker (10 | 10)
+// ├── soundwave (10 | 100)
+// │   ├── laserbeak (10 | 30)
+// │   │   ├── rumble (10 | 10)
+// │   │   └── frenzy (10 | 10)
+// │   ├── ravage (10 | 30)
+// │   │   ├── ratbat (10 | 10)
+// │   │   └── buzzsaw (10 | 10)
+// │   └── reflector (10 | 30)
+// │       ├── shockwave (10 | 10)
+// │       └── thundercracker (10 | 10)
+// └── megatron (10 | 99)
+//     ├── galvatron (10 | 30)
+//     │   ├── cyclonus (10 | 10)
+//     │   └── scourge (10 | 10)
+//     ├── shrapnel (10 | 30)
+//     │   ├── bombshell (10 | 10)
+//     │   └── kickback (10 | 10)
+//     └── starscream (9 | 29)
+//         ├── skywarp (10 | 10)
+//         └── waspinator (10 | 10)
+//
+// Format: node_name (self_weight | total_weight)
+//
+optimus (10) -> bumblebee, soundwave, megatron
+bumblebee (10) -> wheeljack, ironhide, ratchet
+soundwave (10) -> laserbeak, ravage, reflector
+megatron (10) -> galvatron, shrapnel, starscream
+wheeljack (10) -> prowl, jazz
+ironhide (10) -> sideswipe, sunstreaker
+ratchet (10) -> mirage, trailbreaker
+laserbeak (10) -> rumble, frenzy
+ravage (10) -> ratbat, buzzsaw
+reflector (10) -> shockwave, thundercracker
+galvatron (10) -> cyclonus, scourge
+shrapnel (10) -> bombshell, kickback
+starscream (9) -> skywarp, waspinator
+prowl (10)
+jazz (10)
+sideswipe (10)
+sunstreaker (10)
+mirage (10)
+trailbreaker (10)
+rumble (10)
+frenzy (10)
+ratbat (10)
+buzzsaw (10)
+shockwave (10)
+thundercracker (10)
+cyclonus (10)
+scourge (10)
+bombshell (10)
+kickback (10)
+skywarp (10)
+waspinator (10)

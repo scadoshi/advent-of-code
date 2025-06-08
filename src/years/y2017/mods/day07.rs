@@ -107,7 +107,7 @@ impl Root for HashNodes {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Clone)]
 struct TreeNode {
     name: String,
     weight: usize,
@@ -170,34 +170,69 @@ impl TreeNode {
                 .map(|c| c.total_weight())
                 .sum::<usize>()
     }
+
+    /// returns an option of the unbalanced node the corrected self weight
+    fn unbalanced_child_and_balancing_weight(&self) -> Option<(TreeNode, usize)> {
+        // if there are no children
+        if self.children.is_empty() {
+            return None;
+        }
+
+        // hashmap to group children by their total weights
+        let weights: HashMap<usize, Vec<&TreeNode>> =
+            self.children.iter().fold(HashMap::new(), |mut map, c| {
+                map.entry(c.total_weight()).or_default().push(c);
+                map
+            });
+
+        // if there are more than two children
+        // we can easily tell which is unbalanced
+        if self.children.len() > 2 {
+            // based on rules of the aoc problem
+            // the expect below is safe
+            // as there always be one imbalanced node
+
+            let (min_weight, unbalanced_child) = weights
+                .iter()
+                .find(|c| c.1.len() == 1)
+                .expect("unbalanced_child not found");
+
+            let (maj_weight, _) = weights
+                .iter()
+                .find(|c| c.1.len() > 1)
+                .expect("maj_weight not found");
+
+            let target_weight =
+                unbalanced_child[0].weight as isize + (*maj_weight as isize - *min_weight as isize);
+
+            return Some((unbalanced_child[0].clone(), target_weight as usize));
+        }
+
+        // if there are only two children
+        // or one child
+        // we are going to have to recur into those children/that child
+        // to find imbalance
+        if self.children.len() < 3 {
+            self.children
+        }
+
+        None
+    }
 }
 
 #[allow(dead_code)]
 pub fn part_one() -> Result<(), Box<dyn Error>> {
     let start = std::time::Instant::now();
     println!(
-        "{:#?}\n...\nruntime={:?}",
+        "part_one={:#?}\n...\nruntime={:?}",
         {
             let hashnodes = include_str!("../inputs/day07.txt")
                 .lines()
+                .filter(|l| !l.starts_with("//"))
                 .map(|s| Node::from_str(s))
                 .collect::<Result<HashNodes, _>>()?;
 
-            let treenode = TreeNode::try_from(hashnodes)?;
-
-            let treenode_weights = treenode
-                .children
-                .iter()
-                .map(|c| c.total_weight())
-                .collect::<Box<[usize]>>();
-
-            let mut out_msg = String::new();
-            if treenode_weights[0]
-                != treenode_weights.iter().sum::<usize>() / treenode_weights.len()
-            {
-                out_msg = "not balanced".to_string();
-            }
-            out_msg
+            hashnodes.root().expect("root not found").0
         },
         start.elapsed()
     );
@@ -205,4 +240,22 @@ pub fn part_one() -> Result<(), Box<dyn Error>> {
 }
 
 #[allow(dead_code)]
-pub fn part_two() {}
+pub fn part_two() -> Result<(), Box<dyn Error>> {
+    let start = std::time::Instant::now();
+    println!(
+        "\npart_two={:#?}\n...\nruntime={:?}",
+        {
+            let hashnodes = include_str!("../inputs/day07.txt")
+                .lines()
+                .filter(|l| !l.starts_with("//"))
+                .map(|s| Node::from_str(s))
+                .collect::<Result<HashNodes, _>>()?;
+
+            let treenode = TreeNode::try_from(hashnodes).expect("failed to build treenode");
+            let megatron = treenode.unbalanced_child_and_balancing_weight().unwrap();
+            megatron
+        },
+        start.elapsed()
+    );
+    Ok(())
+}
