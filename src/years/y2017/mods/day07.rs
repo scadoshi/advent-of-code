@@ -109,7 +109,7 @@ impl Root for HashNodes {
 
 #[derive(Debug, Clone)]
 struct TreeNode {
-    name: String,
+    _name: String,
     weight: usize,
     children: Vec<Box<TreeNode>>,
 }
@@ -142,7 +142,7 @@ impl TryFrom<HashNodes> for TreeNode {
 impl TreeNode {
     fn new(from: TupleNode, nodes: &HashNodes) -> Self {
         TreeNode {
-            name: from.0,
+            _name: from.0,
             weight: from.1.weight,
             children: from
                 .1
