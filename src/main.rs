@@ -1,5 +1,5 @@
 pub mod years;
-use crate::years::y2020::mods::day07::{part_one, part_two};
+use crate::years::y2021::mods::day07::{part_one, part_two};
 
 fn main() {
     let _ = part_one();
