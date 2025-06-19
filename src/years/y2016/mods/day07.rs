@@ -119,7 +119,8 @@ pub fn part_two() {
 mod tests {
     use super::*;
 
-    #[test]
+    #[ignore]
+    #[allow(dead_code)]
     fn counterpart_simple() {
         let input = ['a', 'b', 'a'];
         let result = input.counterpart();

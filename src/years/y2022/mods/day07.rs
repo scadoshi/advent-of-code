@@ -1,17 +1,30 @@
 use std::{collections::HashMap, path::PathBuf};
 
-enum _Content {
+enum Content {
     File {
         path: PathBuf,
         memory: usize,
     },
     Dir {
         path: PathBuf,
-        children: Vec<_Content>,
+        children: Vec<Content>,
     },
 }
 
-fn flat_input() -> HashMap<PathBuf, Vec<String>> {
+impl From<FlatInput> for Content {
+    fn from(value: FlatInput) -> Self {
+        todo!()
+    }
+}
+
+trait FindRoot {
+    fn find_root(&self) -> String {
+        todo!()
+    }
+}
+
+type FlatInput = HashMap<PathBuf, Vec<String>>;
+fn flat_input() -> FlatInput {
     include_str!("../inputs/day07.txt")
         .split("$")
         .skip(1)
