@@ -1,3 +1,4 @@
+use rand;
 use std::collections::HashSet;
 
 #[allow(dead_code)]
@@ -108,9 +109,9 @@ impl PrintOnScreenSize for Pixels {
         for row in 0..screen_dimensions.height {
             for col in 0..screen_dimensions.width {
                 if self.contains(&(col, row)) {
-                    print!("# ");
+                    print!("{} ", if rand::random::<bool>() { "1" } else { "0" });
                 } else {
-                    print!(". ");
+                    print!("  ");
                 }
             }
             print!("\n");
