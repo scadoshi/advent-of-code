@@ -1,15 +1,31 @@
 use std::collections::HashSet;
 
 #[derive(Debug)]
-enum Dir {
-    L,
-    R,
-    U,
-    D,
+enum Direction {
+    Left,
+    Right,
+    Up,
+    Down,
+}
+
+fn left() -> Direction {
+    Direction::Left
+}
+
+fn right() -> Direction {
+    Direction::Right
+}
+
+fn up() -> Direction {
+    Direction::Up
+}
+
+fn down() -> Direction {
+    Direction::Down
 }
 
 struct Instr {
-    dir: Dir,
+    dir: Direction,
     dist: i32,
 }
 
@@ -19,19 +35,19 @@ impl From<&str> for Instr {
         let val: i32 = val_str.parse().expect("failed to parse i32");
         match dir {
             "L" => Instr {
-                dir: Dir::L,
+                dir: left(),
                 dist: val,
             },
             "R" => Instr {
-                dir: Dir::R,
+                dir: right(),
                 dist: val,
             },
             "U" => Instr {
-                dir: Dir::U,
+                dir: up(),
                 dist: val,
             },
             "D" => Instr {
-                dir: Dir::D,
+                dir: down(),
                 dist: val,
             },
             _ => panic!("input dir is not valid direction"),
@@ -54,17 +70,17 @@ impl Input for Instrs {
 
 type Point = (i32, i32);
 trait PointOps {
-    fn step(&mut self, dir: &Dir) -> Point;
+    fn step(&mut self, dir: &Direction) -> Point;
     fn diff(&self, other: Point) -> Point;
     fn adjust_to(&mut self, h: Point) -> Point;
 }
 impl PointOps for Point {
-    fn step(&mut self, dir: &Dir) -> Point {
+    fn step(&mut self, dir: &Direction) -> Point {
         *self = match dir {
-            Dir::L => (self.0, self.1 - 1),
-            Dir::R => (self.0, self.1 + 1),
-            Dir::U => (self.0 - 1, self.1),
-            Dir::D => (self.0 + 1, self.1),
+            Direction::Left => (self.0, self.1 - 1),
+            Direction::Right => (self.0, self.1 + 1),
+            Direction::Up => (self.0 - 1, self.1),
+            Direction::Down => (self.0 + 1, self.1),
         };
         *self
     }
@@ -94,15 +110,15 @@ impl PointOps for Point {
         //
         *self = match other.diff(*self) {
             // simple
-            (0, -2) => self.step(&Dir::L),
-            (0, 2) => self.step(&Dir::R),
-            (-2, 0) => self.step(&Dir::U),
-            (2, 0) => self.step(&Dir::D),
+            (0, -2) => self.step(&left()),
+            (0, 2) => self.step(&right()),
+            (-2, 0) => self.step(&up()),
+            (2, 0) => self.step(&down()),
             // diagonal
-            diff if [(-1, -2), (-2, -1)].contains(&diff) => self.step(&Dir::L).step(&Dir::U),
-            diff if [(-2, 1), (-1, 2)].contains(&diff) => self.step(&Dir::R).step(&Dir::U),
-            diff if [(1, -2), (2, -1)].contains(&diff) => self.step(&Dir::L).step(&Dir::D),
-            diff if [(2, 1), (1, 2)].contains(&diff) => self.step(&Dir::R).step(&Dir::D),
+            diff if [(-1, -2), (-2, -1)].contains(&diff) => self.step(&left()).step(&up()),
+            diff if [(-2, 1), (-1, 2)].contains(&diff) => self.step(&right()).step(&up()),
+            diff if [(1, -2), (2, -1)].contains(&diff) => self.step(&left()).step(&down()),
+            diff if [(2, 1), (1, 2)].contains(&diff) => self.step(&right()).step(&down()),
             // ignore
             diff if diff.0.abs() < 2 && diff.1.abs() < 2 => *self,
             any_other_diff => {
